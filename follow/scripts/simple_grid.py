@@ -38,25 +38,62 @@ def transition(state, robot_action, human_action):
     else:
         new_rp = move_in_dir(rp, turn_right(new_hh))
 
+    if new_rp == new_hp:
+        new_rp = rp
+
     return {'robot_pos': new_rp, 'human_pos': new_hp, 'human_heading': new_hh}
 
 def reward(state):
     desired = desired_robot_pos(state['human_pos'], state['human_heading'])
     rp = state['robot_pos']
     dist = ((rp[0] - desired[0])**2 + (rp[1] - desired[1])**2)**0.5
-    r = -(dist ** 2)
-    if rp == state['human_pos']:
-        r -= 10
-    return r
+    return -(dist ** 2)
 
-def render(state):
-    grid = [['.' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
-    hx, hy = state['human_pos']
-    rx, ry = state['robot_pos']
-    grid[hy][hx] = 'H'
-    if (rx, ry) != (hx, hy):
-        grid[ry][rx] = 'R'
-    for row in grid:
-        print(' '.join(row))
-    print(f"Heading: {state['human_heading']}")
+def _heatmap_char(x, y, desired, human_pos, robot_pos):
+    if (x, y) == desired:
+        return '*'
+    if (x, y) == human_pos:
+        return 'H'
+    if (x, y) == robot_pos:
+        return 'R'
+    dist = ((x - desired[0])**2 + (y - desired[1])**2)**0.5
+    max_dist = ((GRID_SIZE - 1)**2 + (GRID_SIZE - 1)**2)**0.5
+    intensity = int((1 - dist / max_dist) * 9)
+    return str(intensity)
+
+def render(state, step=None, robot_action=None, human_action=None):
+    hp = state['human_pos']
+    rp = state['robot_pos']
+    hh = state['human_heading']
+    desired = desired_robot_pos(hp, hh)
+    r = reward(state)
+
+    grid_rows = []
+    heat_rows = []
+
+    for y in range(GRID_SIZE):
+        grow = []
+        hrow = []
+        for x in range(GRID_SIZE):
+            if (x, y) == hp:
+                grow.append('H')
+            elif (x, y) == rp:
+                grow.append('R')
+            else:
+                grow.append('.')
+            hrow.append(_heatmap_char(x, y, desired, hp, rp))
+        grid_rows.append(' '.join(grow))
+        heat_rows.append(' '.join(hrow))
+
+    if step is not None:
+        header = f"step {step}"
+        if robot_action and human_action:
+            header += f"  |  robot: {robot_action:<8} human: {human_action}"
+        print(header)
+
+    sep = '     '
+    for g, h in zip(grid_rows, heat_rows):
+        print(g + sep + h)
+
+    print(f"heading: {hh:<2}  desired: {desired}  robot: {rp}  reward: {r:.2f}")
     print()

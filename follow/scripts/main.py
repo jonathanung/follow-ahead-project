@@ -3,7 +3,7 @@ from simple_grid import transition, render, HUMAN_ACTIONS
 from human_model import human_probabilities
 from mcts import mcts
 
-def run(steps=10, n_simulations=200):
+def run(steps=50, n_simulations=500):
     state = {
         'robot_pos': (3, 5),
         'human_pos': (3, 3),
@@ -12,7 +12,7 @@ def run(steps=10, n_simulations=200):
 
     render(state)
 
-    for step in range(steps):
+    for step in range(1, steps + 1):
         robot_action = mcts(state, n_simulations=n_simulations)
 
         probs = human_probabilities(state)

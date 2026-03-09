@@ -30,7 +30,7 @@ def backprop(node, value):
         node.total_value += value
         node = node.parent
 
-def mcts(state, n_simulations=500, rollout_depth=5):
+def mcts(state, n_simulations=500, rollout_depth=10):
     root = Node(state, node_type='robot')
 
     for _ in range(n_simulations):
