@@ -8,4 +8,4 @@ def human_probabilities(state):
     if forward_pos == hp:
         return {'forward': 0.1, 'left': 0.45, 'right': 0.45}
 
-    return {'forward': 0.7, 'left': 0.15, 'right': 0.15}
+    return {'forward': 0.85, 'left': 0.075, 'right': 0.075}

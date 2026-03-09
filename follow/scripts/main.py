@@ -1,29 +1,23 @@
 import random
-from simple_grid import transition, render, HUMAN_ACTIONS
+from simple_grid import transition, render, desired_robot_pos
 from human_model import human_probabilities
-from mcts import mcts
+from planner import MCTSPlanner
 
-def run(steps=50, n_simulations=500):
+def run(steps=50, n_simulations=None, time_budget=None, verbose=False):
     state = {
-        'robot_pos': (3, 5),
+        'robot_pos': (3, 4),
         'human_pos': (3, 3),
-        'human_heading': 'N'
+        'human_heading': 'N',
     }
-
-    render(state)
+    planner = MCTSPlanner(n_simulations=n_simulations, time_budget=time_budget, verbose=verbose)
+    render(state, step=0)
 
     for step in range(1, steps + 1):
-        robot_action = mcts(state, n_simulations=n_simulations)
-
+        robot_action = planner.plan(state)
         probs = human_probabilities(state)
-        actions = list(probs.keys())
-        weights = list(probs.values())
-        human_action = random.choices(actions, weights=weights)[0]
-
+        human_action = random.choices(list(probs.keys()), weights=list(probs.values()))[0]
         state = transition(state, robot_action, human_action)
-
-        print(f"Step {step+1} | Robot: {robot_action} | Human: {human_action}")
-        render(state)
+        render(state, step=step, robot_action=robot_action, human_action=human_action)
 
 if __name__ == '__main__':
-    run()
+    run(time_budget=0.15)
