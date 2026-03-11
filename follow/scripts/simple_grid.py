@@ -45,9 +45,12 @@ def transition(state, robot_action, human_action):
     else:
         new_hp, new_hh = hp, turn_right(hh)
 
-    new_rp = move_in_dir(rp, robot_action)
-    if new_rp == new_hp:
+    if robot_action == 'STAY':
         new_rp = rp
+    else:
+        new_rp = move_in_dir(rp, robot_action)
+        if new_rp == new_hp:
+            new_rp = rp
 
     return {
         'robot_pos': new_rp,

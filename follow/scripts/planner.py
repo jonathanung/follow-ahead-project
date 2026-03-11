@@ -1,12 +1,29 @@
 import time
 import random
 import copy
+import math
 from node import Node
 from simple_grid import transition, reward, ROBOT_ACTIONS
 from human_model import human_probabilities
 from rollout import rollout
 
 MAX_DEPTH = 20
+GAMMA = 0.95
+STAY_DISTANCE = 2.5
+
+def rl_value(state):
+    return 0.0
+
+def _dist(a, b):
+    return math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
+
+def _stay_bool(state, use_stay=False):
+    if not use_stay:
+        return False
+    return _dist(state['robot_pos'], state['human_pos']) > STAY_DISTANCE
+
+def _node_value(state):
+    return reward(state) + (rl_value(state) / 10) * GAMMA
 
 def _expand_robot(node):
     p = 1.0 / len(ROBOT_ACTIONS)
@@ -40,7 +57,7 @@ def _run_tree(root, budget_fn):
     while budget_fn():
         leaf = _select(root)
         if leaf.visits == 0:
-            value = reward(leaf.state) + rollout(leaf.state)
+            value = _node_value(leaf.state) + rollout(leaf.state)
             _backprop(leaf, value)
             continue
         if leaf.node_type == 'robot':
@@ -49,19 +66,23 @@ def _run_tree(root, budget_fn):
             _expand_human(leaf)
         if leaf.children:
             leaf = random.choice(leaf.children)
-        value = reward(leaf.state) + rollout(leaf.state)
+        value = _node_value(leaf.state) + rollout(leaf.state)
         _backprop(leaf, value)
 
 
 class MCTSPlanner:
-    def __init__(self, n_simulations=None, time_budget=None, verbose=False):
+    def __init__(self, n_simulations=None, time_budget=None, verbose=False, use_stay=False):
         self.n_simulations = n_simulations
         self.time_budget = time_budget
         self.verbose = verbose
+        self.use_stay = use_stay
         if n_simulations is None and time_budget is None:
             self.n_simulations = 1000
 
     def plan(self, state):
+        if _stay_bool(state, use_stay=self.use_stay):
+            return 'STAY'
+
         root = Node(copy.deepcopy(state), node_type='robot')
 
         if self.time_budget is not None:
