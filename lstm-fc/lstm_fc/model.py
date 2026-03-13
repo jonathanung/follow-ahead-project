@@ -10,7 +10,7 @@ class LSTMModel2D(nn.Module):
     Takes a sequence of 2D points and predicts probability distribution
     over actions: left, straight, right.
 
-    Architecture: LSTM -> FC -> Softmax
+    Architecture: LSTM -> Dropout -> FC -> Softmax
     """
 
     def __init__(self, config: ModelConfig = ModelConfig()):
@@ -23,7 +23,9 @@ class LSTMModel2D(nn.Module):
             hidden_size=config.hidden_size,
             num_layers=config.num_layers,
             batch_first=True,
+            dropout=config.dropout if config.num_layers > 1 else 0.0,
         )
+        self.dropout = nn.Dropout(config.dropout)
         self.fc = nn.Linear(config.hidden_size, config.output_size)
         self.softmax = nn.Softmax(dim=1)
 
@@ -40,6 +42,7 @@ class LSTMModel2D(nn.Module):
         c0 = torch.zeros(self.num_layers, batch_size, self.hidden_size, device=x.device)
 
         out, _ = self.lstm(x, (h0, c0))
-        out = self.fc(out[:, -1, :])
+        out = self.dropout(out[:, -1, :])
+        out = self.fc(out)
         out = self.softmax(out)
         return out

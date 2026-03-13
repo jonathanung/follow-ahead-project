@@ -54,11 +54,28 @@ class Trainer:
         self.optimizer = optim.Adam(
             self.model.parameters(), lr=training_config.learning_rate
         )
-        self.scheduler = optim.lr_scheduler.StepLR(
-            self.optimizer,
-            step_size=training_config.scheduler_step,
-            gamma=training_config.scheduler_gamma,
-        )
+        sched_type = getattr(training_config, "scheduler_type", "step")
+        if sched_type == "onecycle":
+            self.scheduler = optim.lr_scheduler.OneCycleLR(
+                self.optimizer,
+                max_lr=training_config.learning_rate,
+                total_steps=training_config.num_epochs,
+                pct_start=0.1,
+                anneal_strategy="cos",
+            )
+        elif sched_type == "cosine":
+            self.scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(
+                self.optimizer,
+                T_0=training_config.num_epochs // 4,
+                T_mult=2,
+                eta_min=1e-6,
+            )
+        else:
+            self.scheduler = optim.lr_scheduler.StepLR(
+                self.optimizer,
+                step_size=training_config.scheduler_step,
+                gamma=training_config.scheduler_gamma,
+            )
 
         # Load data
         self.train_dataset = TrajectoryDataset(data_config, split="train")

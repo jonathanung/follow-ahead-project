@@ -5,9 +5,10 @@ from typing import List
 @dataclass
 class ModelConfig:
     input_size: int = 2       # 2D trajectory points (x, y)
-    hidden_size: int = 64
+    hidden_size: int = 96
     output_size: int = 3      # left, straight, right
     num_layers: int = 1
+    dropout: float = 0.1
 
 
 @dataclass
@@ -29,8 +30,9 @@ class DataConfig:
 @dataclass
 class TrainingConfig:
     num_epochs: int = 100_000
-    batch_size: int = 64
-    learning_rate: float = 0.01
+    batch_size: int = 512
+    learning_rate: float = 0.006
+    scheduler_type: str = "onecycle"  # "step", "cosine", "onecycle"
     scheduler_step: int = 100_000
     scheduler_gamma: float = 0.5
     log_interval: int = 100

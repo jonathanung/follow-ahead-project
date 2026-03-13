@@ -26,13 +26,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-ratio", type=float, default=0.9)
 
     # Model args
-    parser.add_argument("--hidden-size", type=int, default=64)
+    parser.add_argument("--hidden-size", type=int, default=96)
     parser.add_argument("--num-layers", type=int, default=1)
+    parser.add_argument("--dropout", type=float, default=0.1)
 
     # Training args
     parser.add_argument("--num-epochs", type=int, default=100_000)
-    parser.add_argument("--batch-size", type=int, default=64)
-    parser.add_argument("--learning-rate", type=float, default=0.01)
+    parser.add_argument("--batch-size", type=int, default=512)
+    parser.add_argument("--learning-rate", type=float, default=0.006)
+    parser.add_argument("--scheduler-type", type=str, default="onecycle",
+                        choices=["step", "cosine", "onecycle"])
     parser.add_argument("--device", type=str, default="auto")
     parser.add_argument("--output-dir", type=str, default="outputs")
     parser.add_argument("--seed", type=int, default=42)
@@ -73,12 +76,14 @@ def main():
     model_config = ModelConfig(
         hidden_size=args.hidden_size,
         num_layers=args.num_layers,
+        dropout=args.dropout,
     )
 
     training_config = TrainingConfig(
         num_epochs=args.num_epochs,
         batch_size=args.batch_size,
         learning_rate=args.learning_rate,
+        scheduler_type=args.scheduler_type,
         device=args.device,
         output_dir=args.output_dir,
         seed=args.seed,
