@@ -2338,5 +2338,320 @@
     "total_steps": 20000,
     "elapsed_seconds": 1365.7782802581787,
     "n_params": 267011
+  },
+  {
+    "trial_id": 52,
+    "config": {
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.005,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.01765703223645687,
+    "test_mae": 0.0939021110534668,
+    "test_accuracy": 0.8668755888938904,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6259106397628784,
+        "precision": 0.8999221883043036,
+        "recall": 0.6259106615045169,
+        "f1": 0.7383127087016303,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9684978723526001,
+        "precision": 0.8591342923524031,
+        "recall": 0.9684979010768389,
+        "f1": 0.9105439944403692,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.6472545266151428,
+        "precision": 0.8896917692220843,
+        "recall": 0.647254507371966,
+        "f1": 0.7493521622328413,
+        "count": 24349
+      }
+    },
+    "best_step": 19200,
+    "total_steps": 20000,
+    "elapsed_seconds": 1367.4345061779022,
+    "n_params": 267011
+  },
+  {
+    "trial_id": 53,
+    "config": {
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.007,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.015559942461550236,
+    "test_mae": 0.08727090060710907,
+    "test_accuracy": 0.8719214797019958,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6635027527809143,
+        "precision": 0.8808444788327623,
+        "recall": 0.6635027684109738,
+        "f1": 0.7568799715065891,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9607957601547241,
+        "precision": 0.8698281559814938,
+        "recall": 0.9607957656506662,
+        "f1": 0.9130517734801838,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.6775637865066528,
+        "precision": 0.8768069727891157,
+        "recall": 0.6775637603186989,
+        "f1": 0.7644156145024905,
+        "count": 24349
+      }
+    },
+    "best_step": 20000,
+    "total_steps": 20000,
+    "elapsed_seconds": 1382.3595848083496,
+    "n_params": 267011
+  },
+  {
+    "trial_id": 54,
+    "config": {
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.01,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.014356078580021858,
+    "test_mae": 0.08241071552038193,
+    "test_accuracy": 0.8764229416847229,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6826943159103394,
+        "precision": 0.8783139628300574,
+        "recall": 0.6826943091461638,
+        "f1": 0.7682469783566007,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9581493139266968,
+        "precision": 0.8766155695822062,
+        "recall": 0.9581492973170287,
+        "f1": 0.9155708256304719,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.6997412443161011,
+        "precision": 0.8734300507510124,
+        "recall": 0.6997412624748449,
+        "f1": 0.7769974461875228,
+        "count": 24349
+      }
+    },
+    "best_step": 19300,
+    "total_steps": 20000,
+    "elapsed_seconds": 1362.161110162735,
+    "n_params": 267011
+  },
+  {
+    "trial_id": 55,
+    "config": {
+      "hidden_size": 384,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.003,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.01791302300989628,
+    "test_mae": 0.09475397318601608,
+    "test_accuracy": 0.8658372759819031,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6214978694915771,
+        "precision": 0.8992290085531863,
+        "recall": 0.6214978560426294,
+        "f1": 0.7350023385766685,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9693648219108582,
+        "precision": 0.8575845894254136,
+        "recall": 0.969364847599927,
+        "f1": 0.9100551312311785,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.6409708857536316,
+        "precision": 0.8925936517014584,
+        "recall": 0.640970881761058,
+        "f1": 0.7461395037529283,
+        "count": 24349
+      }
+    },
+    "best_step": 19600,
+    "total_steps": 20000,
+    "elapsed_seconds": 2411.4114294052124,
+    "n_params": 597123
+  },
+  {
+    "trial_id": 56,
+    "config": {
+      "hidden_size": 384,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.005,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.01488342322409153,
+    "test_mae": 0.08420724421739578,
+    "test_accuracy": 0.8725482821464539,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6706631779670715,
+        "precision": 0.8782641879736139,
+        "recall": 0.6706631697264893,
+        "f1": 0.7605514115758663,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9580762982368469,
+        "precision": 0.8723317629267725,
+        "recall": 0.9580762912940317,
+        "f1": 0.9131956978397867,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.6868044137954712,
+        "precision": 0.8684565849605318,
+        "recall": 0.686804386217093,
+        "f1": 0.7670221304896226,
+        "count": 24349
+      }
+    },
+    "best_step": 19700,
+    "total_steps": 20000,
+    "elapsed_seconds": 2417.2242436408997,
+    "n_params": 597123
+  },
+  {
+    "trial_id": 57,
+    "config": {
+      "hidden_size": 384,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.007,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.014270313084125519,
+    "test_mae": 0.08165649324655533,
+    "test_accuracy": 0.8766255378723145,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6871903538703918,
+        "precision": 0.876679589994158,
+        "recall": 0.6871903750884643,
+        "f1": 0.7704550758459743,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9567804336547852,
+        "precision": 0.8778845831798239,
+        "recall": 0.9567804343858368,
+        "f1": 0.915636134982184,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.7027804255485535,
+        "precision": 0.8689382013913574,
+        "recall": 0.7027804016592057,
+        "f1": 0.7770764270469098,
+        "count": 24349
+      }
+    },
+    "best_step": 19700,
+    "total_steps": 20000,
+    "elapsed_seconds": 1995.5654497146606,
+    "n_params": 597123
+  },
+  {
+    "trial_id": 58,
+    "config": {
+      "hidden_size": 384,
+      "num_layers": 1,
+      "dropout": 0.1,
+      "learning_rate": 0.01,
+      "batch_size": 512,
+      "scheduler_type": "onecycle",
+      "weight_decay": 0.0,
+      "grad_clip": 0.0,
+      "tanh_power": 0.2,
+      "pct_start": 0.1
+    },
+    "test_mse": 0.014082993380725384,
+    "test_mae": 0.08071594685316086,
+    "test_accuracy": 0.8772585988044739,
+    "per_class": {
+      "left": {
+        "accuracy": 0.6938928365707397,
+        "precision": 0.872807247211604,
+        "recall": 0.6938928437617085,
+        "f1": 0.7731341898974907,
+        "count": 24021
+      },
+      "straight": {
+        "accuracy": 0.9545629024505615,
+        "precision": 0.8801760335237839,
+        "recall": 0.9545628764373061,
+        "f1": 0.9158615013505763,
+        "count": 109580
+      },
+      "right": {
+        "accuracy": 0.7102550268173218,
+        "precision": 0.8641814911053368,
+        "recall": 0.7102550412747957,
+        "f1": 0.7796938752507834,
+        "count": 24349
+      }
+    },
+    "best_step": 19800,
+    "total_steps": 20000,
+    "elapsed_seconds": 1460.1651639938354,
+    "n_params": 597123
   }
 ]
