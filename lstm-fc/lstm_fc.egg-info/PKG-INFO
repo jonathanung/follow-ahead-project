@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: lstm-fc
+Version: 0.1.0
+Summary: LSTM-FC human action probability predictor for follow-ahead
+Requires-Python: >=3.8
+Requires-Dist: torch>=1.12
+Requires-Dist: numpy>=1.21
+Provides-Extra: train
+Requires-Dist: matplotlib>=3.5; extra == "train"
