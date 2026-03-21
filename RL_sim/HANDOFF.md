@@ -1,9 +1,4 @@
-# RL Value Function — Handoff for Gemmin
-
-**From**: Ankush Singh (RL lead)  
-**For**: Gemmin Sugiura (MCTS / ROS 2 C++ node)
-
----
+# RL Value Function — Handoff
 
 ## What this module provides
 
@@ -15,10 +10,8 @@ A trained A2C value function `V(s)` that scores how good a robot–human configu
 
 | File | Description |
 |---|---|
-| `models/value_fn.pt` | **TorchScript** — recommended for C++ libtorch |
-| `models/value_fn.onnx` | **ONNX** — alternative, needs onnxruntime |
-| `models/a2c_follow_ahead.zip` | Full SB3 model (Python only, do not use in C++) |
-| `RL_interface.py` | Python wrapper (for Python MCTS / testing only) |
+| `models/a2c_follow_ahead.zip` | Full SB3 model (Python) |
+| `RL_interface.py` | Python wrapper for MCTS / testing |
 
 ---
 
@@ -35,30 +28,6 @@ dx           = robot_x - human_x        (metres)
 dy           = robot_y - human_y        (metres)
 human_theta  = human global heading     (radians)
 robot_theta  = robot global heading     (radians)
-```
-
----
-
-## C++ Integration (libtorch / TorchScript)
-
-```cpp
-#include <torch/script.h>
-
-// Load once at startup
-torch::jit::script::Module value_fn = torch::jit::load("value_fn.pt");
-value_fn.eval();
-
-// Call inside evaluate_node()
-auto obs = torch::tensor({dx, dy, human_theta, robot_theta},
-                          torch::kFloat32).unsqueeze(0); // shape [1,4]
-auto output = value_fn.forward({obs}).toTensor();        // shape [1,1]
-float v = output[0][0].item<float>();                    // scalar V(s)
-```
-
-### CMakeLists.txt addition
-```cmake
-find_package(Torch REQUIRED)
-target_link_libraries(mcts_node ${TORCH_LIBRARIES})
 ```
 
 ---
