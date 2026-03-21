@@ -1,8 +1,5 @@
 # RL Value Function — Handoff for Gemmin
 
-**From**: Ankush Singh (RL lead)  
-**For**: Gemmin Sugiura (MCTS / ROS 2 C++ node)
-
 ---
 
 ## What this module provides
