@@ -1,5 +1,8 @@
 # RL Value Function — Handoff for Gemmin
 
+**From**: Ankush Singh (RL lead)  
+**For**: Gemmin Sugiura (MCTS / ROS 2 C++ node)
+
 ---
 
 ## What this module provides
@@ -60,61 +63,55 @@ target_link_libraries(mcts_node ${TORCH_LIBRARIES})
 
 ---
 
-## Python testing (confirm it works before C++ integration)
+## Setup
 
 ```bash
-cd RL_sim/
-python - <<'EOF'
-import torch
-m = torch.jit.load("models/value_fn.pt")
-m.eval()
-
-# Ideal pose: robot directly ahead of human at ~1.5m
-import math
-ideal = torch.tensor([[0.0, 1.5, 0.0, 0.0]])     # ahead at 1.5m
-random = torch.tensor([[5.0, -3.0, 0.5, -0.2]])  # bad pose
-
-print(f"V(ideal)  = {m(ideal)[0,0].item():.4f}")
-print(f"V(random) = {m(random)[0,0].item():.4f}")
-# V(ideal) should be HIGHER than V(random)
-EOF
+pip install stable-baselines3 torch
 ```
 
 ---
 
-## How it fits into MCTS (search.py)
-
-In `evaluate_node()`, replace the existing RL call with:
+## Usage in mcts_node.py
 
 ```python
-# Build 4-dim obs from MCTS node state
-state_arr = node.state.state            # shape (2, 3): [[xr,yr,θr], [xh,yh,θh]]
+import sys
+sys.path.insert(0, '<path-to-repo>/RL_sim')
+from RL_interface import RL_model
+import numpy as np
+
+# Load once at startup
+rl = RL_model()
+rl.load_model('<path-to-repo>/RL_sim/models/a2c_follow_ahead')
+
+# Inside evaluate_node() — build obs from MCTS state
+state_arr = node.state.state   # shape (2,3): [[xr,yr,θr], [xh,yh,θh]]
 obs = np.array([
-    state_arr[0, 0] - state_arr[1, 0], # dx
-    state_arr[0, 1] - state_arr[1, 1], # dy
-    state_arr[1, 2],                   # human_theta
-    state_arr[0, 2],                   # robot_theta
+    state_arr[0,0] - state_arr[1,0],  # dx  (robot_x - human_x)
+    state_arr[0,1] - state_arr[1,1],  # dy  (robot_y - human_y)
+    state_arr[1,2],                   # human_theta (rad)
+    state_arr[0,2],                   # robot_theta (rad)
 ], dtype=np.float32)
 
-value = self.params['RL_model'].evaluate_state(obs)  # → float scalar
-
-return r + value / 10.0 * self.params['gamma']
+value = rl.evaluate_state(obs)   # → float scalar V(s)
+return r + value / 10.0 * params['gamma']
 ```
 
 ---
 
-## Regenerating the exported models
-
-If you need to retrain or re-export:
+## Quick test
 
 ```bash
 cd RL_sim/
-python train_a2c.py               # re-trains (500k steps, ~60s)
-python export_value_fn.py        # re-exports .pt and .onnx
+python -c "
+from RL_interface import RL_model
+import numpy as np
+rl = RL_model()
+rl.load_model('models/a2c_follow_ahead')
+v = rl.evaluate_state(np.zeros(4, dtype=np.float32))
+print('V(zeros):', v)   # should print a float
+"
 ```
 
 ---
 
-## Contact
-
-Any questions about the obs format or reward shaping — reach out to Ankush.
+Questions → Ankush
