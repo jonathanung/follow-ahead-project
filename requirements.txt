@@ -1,0 +1,7 @@
+stable-baselines3==2.7.1
+gymnasium==1.0.0
+scipy==1.14.1
+matplotlib==3.10.0
+numpy==1.26.4
+casadi==3.7.0
+treelib==1.8.0

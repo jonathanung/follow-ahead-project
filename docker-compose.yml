@@ -1,0 +1,18 @@
+services:
+  follow-ahead:
+    build: .
+    container_name: follow-ahead-dev
+    image: follow-ahead:humble
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DISTRO=humble
+      - TURTLEBOT3_MODEL=waffle_pi
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:ro
+      - ./:/workspace
+    network_mode: bridge
+    stdin_open: true
+    tty: true
+    command: bash -c "source /opt/ros/humble/setup.bash && exec bash"

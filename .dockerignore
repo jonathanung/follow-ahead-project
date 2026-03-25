@@ -1,0 +1,11 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.egg-info
+build
+install
+log
+*.npy
+*.npz
+.env
