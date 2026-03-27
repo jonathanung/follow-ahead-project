@@ -4,19 +4,18 @@ reward.py — Reward functions for the Follow-Ahead RL agent.
 Implements the reward signal from the paper (equations 3a, 3b, 3c):
 
     r_d     — distance reward  (Eq. 3b): peaked at 1.5 m, penalties outside zone
-    r_alpha — orientation reward (Eq. 3c): rewards being in the forward cone
-    reward  — combined total reward (Eq. 3a): clipped to [-1, 1]
+    r_alpha — orientation reward (Eq. 3c): rewards being in the 50° forward cone
+    reward  — combined total reward (Eq. 3a): r_d + r_alpha
 
 These are PURE FUNCTIONS — no class state, no ROS dependency, no gym import.
 This means they can be called identically from:
   - nav_env.py   (RL training)
-  - search.py    (MCTS node evaluation via RL_interface.py)
+  - planner.py   (MCTS node evaluation via RL_interface.py)
 
-Faithfully reproduces navi_state.py's calculate_reward() from the ROS1 repo.
-Key difference vs. the old nav_env.py inline code:
-  - r_d thresholds match navi_state.py exactly (D_MIN=0.5, D_MAX=4.0, ramp at 2.0)
-  - r_d is rescaled from [-1,1] → [0,1] before combining with r_alpha
-    (matches navi_state.py lines 71-73: r_d /= 2; r_d += 0.5)
+Aligned with the published paper (Leisiazar et al., IEEE RA-L 2025):
+  - r_d thresholds: D_MIN=0.5, D_MAX=4.0 (Eq. 3b)
+  - r_d rescaled from [-1,1] → [0,1] to match navi_state.py (lines 71-73)
+  - r_alpha threshold: 50° (Eq. 3c); penalty branch: -1.0 (flat, per paper)
 """
 
 import numpy as np
@@ -29,7 +28,7 @@ D_MIN   = 0.5   # [m] — any closer is a collision risk → r_d = -1
 D_MAX   = 4.0   # [m] — too far behind → r_d = -1
 D_IDEAL = 1.5   # [m] — peak of the distance reward
 
-ALPHA_THRESHOLD_DEG = 25.0  # [degrees] — forward cone half-angle for r_alpha
+ALPHA_THRESHOLD_DEG = 50.0  # [degrees] — forward cone half-angle for r_alpha (Eq. 3c)
 
 
 # ---------------------------------------------------------------------------
@@ -74,17 +73,18 @@ def r_d(distance: float) -> float:
 
 
 # ---------------------------------------------------------------------------
-# Equation 3c — orientation reward  r_alpha ∈ [-0.25, 1.0]
+# Equation 3c — orientation reward  r_alpha
 # ---------------------------------------------------------------------------
 
 def r_alpha(alpha_deg: float) -> float:
     """
-    Orientation reward — rewards the agent for being in the human's forward cone.
+    Orientation reward (Eq. 3c) — rewards the agent for being in the human's forward cone.
 
-        alpha < ALPHA_THRESHOLD_DEG  →  (threshold - alpha) / threshold
-                                         peaks at 1.0 when alpha=0° (directly ahead)
-        alpha ≥ ALPHA_THRESHOLD_DEG  →  -0.25 * alpha / 180
-                                         small growing penalty for being to the side/behind
+        |alpha| < 50°  →  (25 - |alpha|) / 25   peaks at 1.0 when alpha=0° (directly ahead)
+        otherwise      →  -1.0                   flat penalty outside the cone
+
+    Note: the paper uses a 50° half-angle cone (not 25°). Threshold fixed to match
+    Eq. 3c exactly: r_alpha = (25 - |α|)/25 if |α| < 50, else -1.
 
     Parameters
     ----------
@@ -93,26 +93,29 @@ def r_alpha(alpha_deg: float) -> float:
 
     Returns
     -------
-    float — r_alpha in roughly [-0.25, 1.0]
+    float — r_alpha in [-1.0, 1.0]
     """
     a = float(alpha_deg)
 
     if a < ALPHA_THRESHOLD_DEG:
-        return (ALPHA_THRESHOLD_DEG - a) / ALPHA_THRESHOLD_DEG
+        return (25.0 - a) / 25.0   # Eq. 3c numerator is 25, not threshold
     else:
-        return -0.25 * a / 180.0
+        return -1.0                # flat -1 outside 50° cone (paper exact)
 
 
 # ---------------------------------------------------------------------------
-# Equation 3a — combined total reward  r ∈ [-1, 1]
+# Equation 3a — combined total reward
 # ---------------------------------------------------------------------------
 
 def reward(distance: float, alpha_deg: float) -> float:
     """
-    Total reward (Eq. 3a):  r = clip( r_d(distance) + r_alpha(alpha_deg), -1, 1 )
+    Total reward (Eq. 3a):  r = r_d(distance) + r_alpha(alpha_deg)
+
+    The paper does not clip the combined reward — the components are bounded
+    such that the sum is well-defined. A soft clip is kept for numerical safety.
 
     This is the function called each step by nav_env.py and each node
-    evaluation by search.py.
+    evaluation in planner.py (MCTS).
 
     Parameters
     ----------
@@ -121,7 +124,6 @@ def reward(distance: float, alpha_deg: float) -> float:
 
     Returns
     -------
-    float — clipped combined reward in [-1, 1]
+    float — combined reward
     """
-    total = r_d(distance) + r_alpha(alpha_deg)
-    return float(np.clip(total, -1.0, 1.0))
+    return float(r_d(distance) + r_alpha(alpha_deg))

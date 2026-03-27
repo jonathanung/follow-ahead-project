@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lstm-fc"
+version = "0.1.0"
+description = "LSTM-FC human action probability predictor for follow-ahead"
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=1.12",
+    "numpy>=1.21",
+]
+
+[project.optional-dependencies]
+train = ["matplotlib>=3.5"]
+
+[tool.setuptools.packages.find]
+where = ["."]

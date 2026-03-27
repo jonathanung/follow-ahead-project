@@ -15,7 +15,7 @@ The agent (robot) observes a 4-dimensional state vector each timestep:
       human_theta   : global heading of the human [rad]
       agent_theta   : global heading of the robot  [rad]
 
-It must learn to select one of **16 discrete actions** (8 directions × 2 speeds)
+It must learn to select one of **6 discrete actions** (left/right/straight × 2 speeds)
 to always stay ~1.5 m *directly ahead* of the human — i.e., in the forward-facing
 cone — as the human performs a random walk.
 
