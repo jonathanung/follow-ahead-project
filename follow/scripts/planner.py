@@ -24,37 +24,37 @@ import copy
 import numpy as np
 
 from node import Node
-from simple_grid import transition, ROBOT_ACTIONS, desired_robot_pos, move_in_dir, GRID_SIZE
-from human_model import human_probabilities
-from rollout import rollout
+# from human_model import human_probabilities  # Removed as it's missing in algo-main
 
 # ---------------------------------------------------------------------------
-# Path setup — add RL_sim to sys.path so we can import reward and RL_interface
+# Path setup — add RL_sim to sys.path so we can import reward, state, and RL_interface
 # ---------------------------------------------------------------------------
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _RL_SIM_DIR = os.path.join(_SCRIPT_DIR, '..', '..', 'RL_sim')
 sys.path.insert(0, os.path.abspath(_RL_SIM_DIR))
 
-from reward import reward as paper_reward   # Eq 3a — uses fixed 50° threshold
+from reward import reward as paper_reward
 from RL_interface import RL_model
+from state import FollowState
 
 # ---------------------------------------------------------------------------
-# MCTS hyperparameters (from paper)
+# MCTS & Kinematics hyperparameters (Aligned with ROS1 & RA-L 2025)
 # ---------------------------------------------------------------------------
-MAX_DEPTH     = 20
-GAMMA         = 0.95
-STAY_DISTANCE = 2.5   # grid cells; if robot is very far, just STAY
-CELL_SIZE     = 0.5   # metres per grid cell  (matches mcts_node.py)
+MAX_DEPTH        = 20
+GAMMA            = 0.95
+STAY_DISTANCE    = 1.5   # [m] - aligned with ROS1 stay() logic
+ROBOT_VEL        = 0.6   # [m/step] normal
+ROBOT_VEL_FAST   = 0.9   # [m/step] (0.6 * 1.5)
+HUMAN_VEL        = 0.6   # [m/step]
+ROBOT_TURN       = math.radians(45.0)  # [rad]
+HUMAN_TURN       = math.radians(10.0)  # [rad]
+EXPANSION_TIME   = 0.15  # [s] (5 Hz search budget)
 
-# ---------------------------------------------------------------------------
-# Heading → radians mapping  (matches mcts_node.py's ACTION_TO_YAW)
-# ---------------------------------------------------------------------------
-_HEADING_TO_RAD = {
-    'N':  math.pi / 2,
-    'E':  0.0,
-    'S': -math.pi / 2,
-    'W':  math.pi,
-}
+SAFETY_R = 0.5   # [m] keep-out radius
+SAFETY_A = 0.25  # [m] human-displaced center
+
+ROBOT_ACTIONS = ["left", "right", "straight", "fast_left", "fast_right", "fast_straight"]
+HUMAN_ACTIONS = ["left", "right", "straight"]
 
 # ---------------------------------------------------------------------------
 # RL model singleton — loaded once at module import time
@@ -71,139 +71,132 @@ except Exception as e:
 
 
 # ---------------------------------------------------------------------------
-# State conversion: grid dict → RL observation vector
+# State Dynamics: Relative turn kinematics (matches navi_state.py)
 # ---------------------------------------------------------------------------
 
-def _grid_state_to_obs(state: dict) -> np.ndarray:
+def calculate_new_state(state: FollowState, action: str, is_robot: bool) -> FollowState:
     """
-    Convert a grid state dict to the 4-D RL observation vector.
-
-        grid state: {
-            'robot_pos':     (cx, cy),          # integer grid cells
-            'human_pos':     (hx, hy),          # integer grid cells
-            'human_heading': 'N'|'E'|'S'|'W',
-        }
-
-        RL obs: [dx, dy, human_theta, robot_theta]  — float32, metres + radians
-
-    robot_theta is approximated as 0.0 because the grid world does not track
-    the robot's heading independently. This is a known limitation.
-
-    Parameters
-    ----------
-    state : dict — grid state from simple_grid.transition()
-
-    Returns
-    -------
-    np.ndarray  shape (4,) float32
+    Apply a relative turn and step.
+    Robot: uses ROBOT_TURN (45 deg)
+    Human: uses HUMAN_TURN (10 deg)
     """
-    rx, ry = state['robot_pos']
-    hx, hy = state['human_pos']
-    h_theta = _HEADING_TO_RAD.get(state['human_heading'], 0.0)
+    if is_robot:
+        angle_delta = 0.0
+        speed = ROBOT_VEL
+        if "left" in action:
+            angle_delta = ROBOT_TURN
+        elif "right" in action:
+            angle_delta = -ROBOT_TURN
+        
+        if "fast" in action:
+            speed = ROBOT_VEL_FAST
+            
+        new_theta = (state.robot_theta + angle_delta + math.pi) % (2 * math.pi) - math.pi
+        return FollowState(
+            human_x=state.human_x,
+            human_y=state.human_y,
+            human_theta=state.human_theta,
+            robot_x=state.robot_x + speed * math.cos(new_theta),
+            robot_y=state.robot_y + speed * math.sin(new_theta),
+            robot_theta=new_theta
+        )
+    else:
+        # Human movement
+        angle_delta = 0.0
+        if action == "left":
+            angle_delta = HUMAN_TURN
+        elif action == "right":
+            angle_delta = -HUMAN_TURN
+            
+        new_h_theta = (state.human_theta + angle_delta + math.pi) % (2 * math.pi) - math.pi
+        return FollowState(
+            human_x=state.human_x + HUMAN_VEL * math.cos(new_h_theta),
+            human_y=state.human_y + HUMAN_VEL * math.sin(new_h_theta),
+            human_theta=new_h_theta,
+            robot_x=state.robot_x,
+            robot_y=state.robot_y,
+            robot_theta=state.robot_theta
+        )
 
-    dx = (rx - hx) * CELL_SIZE   # metres, robot relative to human
-    dy = (ry - hy) * CELL_SIZE
 
-    return np.array([dx, dy, h_theta, 0.0], dtype=np.float32)
+def is_safe(state: FollowState) -> bool:
+    """
+    Collision avoidance using the Displaced Circle model from the paper.
+    Calculates if the robot is outside the safety boundary around the person.
+    """
+    # alpha: angle between human heading and human-to-robot vector
+    # Using human-centric alpha from FollowState
+    alpha_rad = math.radians(state.alpha)
+    
+    # Boundary d_circle = a*cos(alpha) + sqrt(r^2 - a^2*sin^2(alpha))
+    # This is the positive root of: d^2 - 2*d*a*cos(alpha) + a^2 - r^2 = 0
+    a = SAFETY_A
+    r = SAFETY_R
+    
+    d_circle = a * math.cos(alpha_rad) + math.sqrt(r**2 - (a * math.sin(alpha_rad))**2)
+    
+    return state.distance >= d_circle
 
 
 # ---------------------------------------------------------------------------
 # Node value = paper reward + discounted RL value estimate
 # ---------------------------------------------------------------------------
 
-def rl_value(state: dict) -> float:
+def rl_value(state: FollowState) -> float:
     """
-    Query the trained A2C critic to get V(s) for a grid state.
-
-    Returns 0.0 if the model failed to load (graceful degradation).
-
-    Parameters
-    ----------
-    state : dict — grid state dict from simple_grid
-
-    Returns
-    -------
-    float — V(s) from the A2C critic
+    Query the trained A2C critic to get V(s) for a FollowState.
     """
     if _rl is None:
         return 0.0
-    obs = _grid_state_to_obs(state)
+    obs = state.to_numpy()
     return _rl.evaluate_state(obs)
 
 
-def _paper_reward(state: dict) -> float:
-    """
-    Compute the paper reward (Eq 3a) for a grid state.
-
-    Converts grid cell positions to metres, computes Euclidean distance and
-    alpha angle, then calls reward.reward(distance_m, alpha_deg).
-
-    Parameters
-    ----------
-    state : dict — grid state dict
-
-    Returns
-    -------
-    float — r_d + r_alpha  (paper Eq 3a)
-    """
-    rx, ry = state['robot_pos']
-    hx, hy = state['human_pos']
-
-    # Euclidean distance in metres
-    distance = math.sqrt(((rx - hx) * CELL_SIZE) ** 2 +
-                         ((ry - hy) * CELL_SIZE) ** 2)
-
-    # Alpha: angle between human heading and human→robot vector [degrees]
-    h_theta = _HEADING_TO_RAD.get(state['human_heading'], 0.0)
-    bearing  = math.atan2((ry - hy), (rx - hx))   # human→robot bearing (grid units, no CELL_SIZE needed)
-    diff_rad = abs(h_theta - bearing)
-    if diff_rad > math.pi:
-        diff_rad = 2 * math.pi - diff_rad
-    alpha_deg = math.degrees(diff_rad)
-
-    return paper_reward(distance, alpha_deg)
-
-
-def _node_value(state: dict) -> float:
+def _node_value(state: FollowState) -> float:
     """Combined node value: immediate paper reward + discounted RL estimate."""
-    return _paper_reward(state) + (rl_value(state) / 10.0) * GAMMA
+    imm_reward = paper_reward(state.distance, state.alpha)
+    return imm_reward + (rl_value(state) / 10.0) * GAMMA
 
 
 # ---------------------------------------------------------------------------
 # MCTS helpers
 # ---------------------------------------------------------------------------
 
-def _dist(a, b):
-    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
-
-
-def _stay_bool(state, use_stay=False):
+def _stay_bool(state: FollowState, use_stay=False):
     if not use_stay:
         return False
-    return _dist(state['robot_pos'], state['human_pos']) > STAY_DISTANCE
+    return state.distance > STAY_DISTANCE
 
 
-def _expand_robot(node):
+def _expand_robot(node: Node):
+    """
+    Expand the robot's turn. Skip actions that lead to collision.
+    """
     p = 1.0 / len(ROBOT_ACTIONS)
     for action in ROBOT_ACTIONS:
-        child = Node(copy.deepcopy(node.state), parent=node,
+        next_s = calculate_new_state(node.state, action, is_robot=True)
+        
+        # --- Safety Pruning (Deviation alignment) ---
+        if not is_safe(next_s):
+            continue
+            
+        child = Node(next_s, parent=node,
                      action=action, prior=p, node_type='human')
         node.children.append(child)
 
 
 def _expand_human(node, human_probs=None):
     if human_probs is not None:
-        # map LSTM output keys to simple_grid HUMAN_ACTIONS
-        probs = {
-            'forward': human_probs.get('straight', 0.85),
-            'left': human_probs.get('left', 0.075),
-            'right': human_probs.get('right', 0.075)
-        }
+        probs = human_probs
     else:
-        probs = human_probabilities(node.state)
+        # Default fallback (from nav_env.py)
+        probs = {'straight': 0.5, 'left': 0.25, 'right': 0.25}
 
     for action, p in probs.items():
-        new_state = transition(node.state, node.action, action)
+        # node.action is the robot's chosen action
+        # First confirm the robot action was safe
+        new_state = calculate_new_state(node.state, action, is_robot=False)
+        
         child = Node(new_state, parent=node, action=action,
                      prior=float(p), node_type='robot')
         node.children.append(child)
@@ -230,17 +223,19 @@ def _run_tree(root, budget_fn, human_probs=None):
     while budget_fn():
         leaf = _select(root)
         if leaf.visits == 0:
-            value = _node_value(leaf.state) + rollout(leaf.state)
+            value = _node_value(leaf.state)
             _backprop(leaf, value)
             continue
+            
         if leaf.node_type == 'robot':
             _expand_robot(leaf)
         else:
             _expand_human(leaf, human_probs)
+            
         if leaf.children:
             leaf = random.choice(leaf.children)
-        value = _node_value(leaf.state) + rollout(leaf.state)
-        _backprop(leaf, value)
+            value = _node_value(leaf.state)
+            _backprop(leaf, value)
 
 
 # ---------------------------------------------------------------------------
@@ -255,29 +250,25 @@ class MCTSPlanner:
     ----------
     n_simulations : int  — fixed number of simulations per plan() call
                            (used if time_budget is None)
-    time_budget   : float — wall-clock seconds per plan() call (default: 0.15s,
-                            matching the paper's 5 Hz decision rate)
+    time_budget   : float — wall-clock seconds per plan() call (default: 0.15s)
     verbose       : bool  — print root visit counts after each plan
     use_stay      : bool  — allow STAY action when robot is far from human
     """
 
-    def __init__(self, n_simulations=None, time_budget=None,
+    def __init__(self, n_simulations=None, time_budget=EXPANSION_TIME,
                  verbose=False, use_stay=False):
         self.n_simulations = n_simulations
         self.time_budget   = time_budget
         self.verbose       = verbose
         self.use_stay      = use_stay
-        if n_simulations is None and time_budget is None:
-            self.n_simulations = 1000
 
-    def plan(self, state: dict, human_probs: dict = None) -> str:
+    def plan(self, state: FollowState, human_probs: dict = None) -> str:
         """
         Run MCTS from the current state and return the best action.
 
         Parameters
         ----------
-        state       : dict — {'robot_pos': (cx,cy), 'human_pos': (hx,hy),
-                             'human_heading': 'N'|'E'|'S'|'W'}
+        state       : FollowState object
         human_probs : dict, optional — output from lstm_fc HumanActionPredictor
                                        {'left': float, 'straight': float, 'right': float}
 

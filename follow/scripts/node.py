@@ -24,12 +24,18 @@ class Node:
     def is_leaf(self):
         return len(self.children) == 0
 
-    def best_child(self):
+    def best_child(self, c=2.0):
         def ucb_with_tiebreak(n):
-            return (n.ucb(), 1 if n.action == 'N' else 0)
+            # Prefer 'straight' action in ties if it exists
+            score = n.ucb(c)
+            tie_break = 1 if n.action in ['straight', 'fast_straight'] else 0
+            return (score, tie_break)
         return max(self.children, key=ucb_with_tiebreak)
 
     def best_action_child(self):
         def visits_with_tiebreak(n):
-            return (n.visits, 1 if n.action == 'N' else 0)
+            # Prefer 'straight' action in ties if it exists
+            score = n.visits
+            tie_break = 1 if n.action in ['straight', 'fast_straight'] else 0
+            return (score, tie_break)
         return max(self.children, key=visits_with_tiebreak)
