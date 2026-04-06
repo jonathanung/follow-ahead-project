@@ -1,0 +1,62 @@
+[0.000000] (-) TimerEvent: {}
+[0.000405] (follow) JobQueued: {'identifier': 'follow', 'dependencies': OrderedDict()}
+[0.001671] (follow) JobStarted: {'identifier': 'follow'}
+[0.098240] (-) TimerEvent: {}
+[0.198640] (-) TimerEvent: {}
+[0.299084] (-) TimerEvent: {}
+[0.399545] (-) TimerEvent: {}
+[0.500014] (-) TimerEvent: {}
+[0.600479] (-) TimerEvent: {}
+[0.700795] (-) TimerEvent: {}
+[0.801069] (-) TimerEvent: {}
+[0.901350] (-) TimerEvent: {}
+[0.992141] (follow) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/workspaces/ros2_ws/src/follow-ahead-project/build/follow/build', '--no-deps', 'symlink_data'], 'cwd': '/workspaces/ros2_ws/src/follow-ahead-project/build/follow', 'env': {'HOSTNAME': 'asb9838nu-d10', 'GIT_ASKPASS': '/home/ros/.cursor-server/bin/fea2f546c979a0a4ad1deab23552a43568807590/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LIBGL_ALWAYS_SOFTWARE': '1', 'LD_LIBRARY_PATH': '/workspaces/ros2_ws/install/vicon_receiver/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib', 'BROWSER': '/home/ros/.cursor-server/bin/fea2f546c979a0a4ad1deab23552a43568807590/bin/helpers/browser.sh', 'AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS': '1', 'HOME': '/home/ros', 'OLDPWD': '/workspaces/ros2_ws/src', 'TERM_PROGRAM_VERSION': '2.6.21', 'VSCODE_IPC_HOOK_CLI': '/run/user/650128/vscode-ipc-d2bde57b-3f26-4549-8e0c-16cffb6d83f1.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/ros/.cursor-server/bin/fea2f546c979a0a4ad1deab23552a43568807590/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/ros/.cursor-server/bin/fea2f546c979a0a4ad1deab23552a43568807590/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/ros/.cursor-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy', 'COLORTERM': 'truecolor', 'WAYLAND_DISPLAY': '', 'COLCON_PREFIX_PATH': '/workspaces/ros2_ws/install', 'ROS_DISTRO': 'humble', 'OVSX_REGISTRY_URL': 'https://open-vsx.org', 'PULSE_SERVER': '', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'GAZEBO_MODEL_PATH': ':/opt/ros/humble/share/turtlebot3_gazebo/models:/opt/ros/humble/share/turtlebot3_gazebo/models', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/home/ros/.cursor-server/bin/fea2f546c979a0a4ad1deab23552a43568807590/bin/remote-cli:/home/ros/.local/bin:/workspaces/ros2_ws/install/rotate_motor/bin:/opt/ros/humble/bin:/home/ros/.cursor-server/bin/fea2f546c979a0a4ad1deab23552a43568807590/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/ros/.fzf/bin:/home/ros/.cursor-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/650128', 'DISPLAY': '', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/ros/.cursor-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-8a2e31c1d5ed1222.txt', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/650128/vscode-git-552c625bb5.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/workspaces/ros2_ws/install/vicon_receiver:/workspaces/ros2_ws/install/rotate_motor:/workspaces/ros2_ws/install/mpc:/workspaces/ros2_ws/install/mcl:/workspaces/ros2_ws/install/follow:/workspaces/ros2_ws/install/dubins_flat_planner:/opt/ros/humble', 'DEBIAN_FRONTEND': 'dialog', 'VSCODE_GIT_IPC_AUTH_TOKEN': 'a90feb2c91d121b793e28963e8844f688dd838f61b5456b9cc1f3a3c8567dd3d', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/workspaces/ros2_ws/src/follow-ahead-project/build/follow', 'TURTLEBOT3_MODEL': 'burger', 'PYTHONPATH': '/workspaces/ros2_ws/src/follow-ahead-project/build/follow/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.10/site-packages:/workspaces/ros2_ws/build/rotate_motor:/workspaces/ros2_ws/install/rotate_motor/lib/python3.10/site-packages:/workspaces/ros2_ws/build/mpc:/workspaces/ros2_ws/install/mpc/lib/python3.10/site-packages:/workspaces/ros2_ws/build/mcl:/workspaces/ros2_ws/install/mcl/lib/python3.10/site-packages:/workspaces/ros2_ws/build/follow:/workspaces/ros2_ws/install/follow/lib/python3.10/site-packages:/workspaces/ros2_ws/build/dubins_flat_planner:/workspaces/ros2_ws/install/dubins_flat_planner/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/workspaces/ros2_ws/install/vicon_receiver'}, 'shell': False}
+[1.003343] (-) TimerEvent: {}
+[1.103590] (-) TimerEvent: {}
+[1.203960] (-) TimerEvent: {}
+[1.304368] (-) TimerEvent: {}
+[1.404745] (-) TimerEvent: {}
+[1.409594] (follow) StdoutLine: {'line': b'running develop\n'}
+[1.504922] (-) TimerEvent: {}
+[1.605207] (-) TimerEvent: {}
+[1.705541] (-) TimerEvent: {}
+[1.713895] (follow) StdoutLine: {'line': b'running egg_info\n'}
+[1.714260] (follow) StdoutLine: {'line': b'creating follow.egg-info\n'}
+[1.716805] (follow) StdoutLine: {'line': b'writing follow.egg-info/PKG-INFO\n'}
+[1.723839] (follow) StdoutLine: {'line': b'writing dependency_links to follow.egg-info/dependency_links.txt\n'}
+[1.727947] (follow) StdoutLine: {'line': b'writing entry points to follow.egg-info/entry_points.txt\n'}
+[1.731400] (follow) StdoutLine: {'line': b'writing requirements to follow.egg-info/requires.txt\n'}
+[1.735033] (follow) StdoutLine: {'line': b'writing top-level names to follow.egg-info/top_level.txt\n'}
+[1.739866] (follow) StdoutLine: {'line': b"writing manifest file 'follow.egg-info/SOURCES.txt'\n"}
+[1.758769] (follow) StdoutLine: {'line': b"reading manifest file 'follow.egg-info/SOURCES.txt'\n"}
+[1.762713] (follow) StdoutLine: {'line': b"writing manifest file 'follow.egg-info/SOURCES.txt'\n"}
+[1.768323] (follow) StdoutLine: {'line': b'running build_ext\n'}
+[1.768862] (follow) StdoutLine: {'line': b'Creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.10/site-packages/follow.egg-link (link to .)\n'}
+[1.805002] (follow) StdoutLine: {'line': b'Installing fake_vicon script to /workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/follow\n'}
+[1.805640] (-) TimerEvent: {}
+[1.813536] (follow) StdoutLine: {'line': b'Installing main script to /workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/follow\n'}
+[1.827730] (follow) StdoutLine: {'line': b'\n'}
+[1.827863] (follow) StdoutLine: {'line': b'Installed /workspaces/ros2_ws/src/follow-ahead-project/build/follow\n'}
+[1.829422] (follow) StdoutLine: {'line': b'running symlink_data\n'}
+[1.830595] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index\n'}
+[1.831791] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index\n'}
+[1.833887] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages\n'}
+[1.837324] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/resource/follow -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages\n'}
+[1.839268] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/package.xml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow\n'}
+[1.842225] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/params\n'}
+[1.845115] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/params/nav2_params.yaml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/params\n'}
+[1.847351] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/params/vicon_params.yaml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/params\n'}
+[1.849704] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/launch\n'}
+[1.851768] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/launch/follow.launch.py -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/launch\n'}
+[1.853830] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include\n'}
+[1.856131] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/cropped.yaml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include\n'}
+[1.858094] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/cropped.pgm -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include\n'}
+[1.860189] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/human_prob.pth -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include\n'}
+[1.862147] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/multiply_rewards_1.zip -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include\n'}
+[1.864156] (follow) StdoutLine: {'line': b'creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/worlds\n'}
+[1.866123] (follow) StdoutLine: {'line': b'symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/worlds/follow_world.world -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/worlds\n'}
+[1.902898] (follow) CommandEnded: {'returncode': 0}
+[1.905699] (-) TimerEvent: {}
+[2.005942] (-) TimerEvent: {}
+[2.016084] (follow) JobEnded: {'identifier': 'follow', 'rc': 0}
+[2.024200] (-) EventReactorShutdown: {}

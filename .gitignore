@@ -1,2 +1,29 @@
-.env
+# Python
 __pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment (large, not needed by collaborators)
+rl_sim_env/
+
+# SB3 checkpoints (auto-saved during training, regenerate with train_a2c.py)
+RL_sim/checkpoints/
+checkpoints/
+
+# TensorBoard logs (large, regenerate with train_a2c.py)
+RL_sim/logs/
+logs/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Byte-compiled
+*.egg-info/
+dist/
+build/
