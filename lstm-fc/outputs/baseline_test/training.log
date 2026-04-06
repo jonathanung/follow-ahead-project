@@ -1,0 +1,11 @@
+2026-02-28 22:00:00,030 [INFO] lstm_fc.training.trainer: Training on cpu for 500 steps
+2026-02-28 22:00:00,030 [INFO] lstm_fc.training.trainer: Train samples: 1421550, Test samples: 157950
+2026-02-28 22:00:00,276 [INFO] lstm_fc.training.trainer: Step 100/500 | Train Loss: 0.043722 | Test Loss: 0.045075 | LR: 0.010000
+2026-02-28 22:00:00,454 [INFO] lstm_fc.training.trainer: Step 200/500 | Train Loss: 0.046467 | Test Loss: 0.049689 | LR: 0.010000
+2026-02-28 22:00:00,633 [INFO] lstm_fc.training.trainer: Step 300/500 | Train Loss: 0.041045 | Test Loss: 0.039636 | LR: 0.010000
+2026-02-28 22:00:00,811 [INFO] lstm_fc.training.trainer: Step 400/500 | Train Loss: 0.043019 | Test Loss: 0.037248 | LR: 0.010000
+2026-02-28 22:00:00,996 [INFO] lstm_fc.training.trainer: Step 500/500 | Train Loss: 0.037271 | Test Loss: 0.040855 | LR: 0.010000
+2026-02-28 22:00:00,998 [INFO] lstm_fc.training.trainer: Checkpoint saved: outputs/baseline_test/checkpoint_step500.pt
+2026-02-28 22:00:00,998 [INFO] lstm_fc.training.trainer: Final model saved: outputs/baseline_test/model_final.pt
+2026-02-28 22:00:01,132 [INFO] matplotlib.font_manager: generated new fontManager
+2026-02-28 22:00:01,425 [INFO] lstm_fc.training.trainer: Loss plot saved

@@ -1,0 +1,39 @@
+from setuptools import setup
+
+package_name = 'follow'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=[package_name],
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/params', [
+            'params/nav2_params.yaml',
+            'params/vicon_params.yaml',
+        ]),
+        ('share/' + package_name + '/launch', ['launch/follow.launch.py']),  # add this
+        ('share/' + package_name + '/include', [
+            'include/cropped.yaml',
+            'include/cropped.pgm',
+            'include/human_prob.pth',        # add this
+            'include/multiply_rewards_1.zip', # add this
+        ]),
+        ('share/' + package_name + '/worlds', [
+            'worlds/follow_world.world',
+        ]),        
+        ],    
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='sahar',
+    maintainer_email='sahar@todo.todo',
+    description='Follow-ahead robot package (ROS2)',
+    license='TODO: License declaration',
+    entry_points={
+        'console_scripts': [
+            'main = follow.main:main',
+            'fake_vicon = follow.fake_vicon:main',  # add this
+        ],
+    },)

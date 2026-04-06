@@ -1,0 +1,35 @@
+running develop
+running egg_info
+creating follow.egg-info
+writing follow.egg-info/PKG-INFO
+writing dependency_links to follow.egg-info/dependency_links.txt
+writing entry points to follow.egg-info/entry_points.txt
+writing requirements to follow.egg-info/requires.txt
+writing top-level names to follow.egg-info/top_level.txt
+writing manifest file 'follow.egg-info/SOURCES.txt'
+reading manifest file 'follow.egg-info/SOURCES.txt'
+writing manifest file 'follow.egg-info/SOURCES.txt'
+running build_ext
+Creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.10/site-packages/follow.egg-link (link to .)
+Installing fake_vicon script to /workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+Installing main script to /workspaces/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+
+Installed /workspaces/ros2_ws/src/follow-ahead-project/build/follow
+running symlink_data
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/resource/follow -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/package.xml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/params
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/params/nav2_params.yaml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/params
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/params/vicon_params.yaml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/params
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/launch
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/launch/follow.launch.py -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/launch
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/cropped.yaml -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/cropped.pgm -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/human_prob.pth -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/include/multiply_rewards_1.zip -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/include
+creating /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/worlds
+symbolically linking /workspaces/ros2_ws/src/follow-ahead-project/build/follow/worlds/follow_world.world -> /workspaces/ros2_ws/src/follow-ahead-project/install/follow/share/follow/worlds
