@@ -1,0 +1,41 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.7
+      Class: rviz_default_plugins/Map
+      Name: Map
+      Topic:
+        Value: /map
+    - Class: rviz_default_plugins/Marker
+      Name: RobotTraj
+      Topic:
+        Value: /robot_traj
+    - Class: rviz_default_plugins/Marker
+      Name: HumanTraj
+      Topic:
+        Value: /human_traj
+    - Class: rviz_default_plugins/Marker
+      Name: RobotArrow
+      Topic:
+        Value: /robot_traj_arrow
+    - Class: rviz_default_plugins/Marker
+      Name: HumanArrow
+      Topic:
+        Value: /human_traj_arrow
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      ShowAxes: false
+      ShowArrows: true
+  Global Options:
+    Fixed Frame: map
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Scale: 80
+      X: 0
+      Y: 0

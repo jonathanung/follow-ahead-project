@@ -4,7 +4,11 @@ from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import math
 import time
-from gazebo_msgs.msg import ModelStates
+
+try:
+    from gazebo_msgs.msg import ModelStates as _ModelStates
+except ImportError:
+    _ModelStates = None
 
 class FakeVicon(Node):
     def __init__(self):
@@ -38,7 +42,8 @@ class FakeVicon(Node):
         # subscribe to robot odom (estimate) from Gazebo
         # robot's odometry from Gazebo
         self.create_subscription(Odometry, "/odom", self.odom_callback, 10)
-        self.create_subscription(ModelStates, '/gazebo/model_states', self.model_states_callback, 10)
+        if _ModelStates is not None:
+            self.create_subscription(_ModelStates, '/gazebo/model_states', self.model_states_callback, 10)
 
         # publish fake vicon topics - robot is robot and helmet is human
         # repackages it as a TransformStamped message
@@ -47,7 +52,10 @@ class FakeVicon(Node):
 
         # publish fake human at 10hz
         self.create_timer(0.1, self.publish_human)
+        # publish robot pose even when no odom arrives (pure sim, no Gazebo)
+        self.create_timer(0.1, self._publish_robot_static)
 
+        self._odom_received = False
         self.robot_transform = TransformStamped()
         self.start_time = time.time()
 
@@ -64,7 +72,19 @@ class FakeVicon(Node):
 
         t.transform.rotation = msg.pose.pose.orientation
 
+        self._odom_received = True
         self.robot_transform = t
+        self.pub_robot.publish(t)
+
+    def _publish_robot_static(self):
+        """Publish a static robot pose at the origin when no odom source is available."""
+        if self._odom_received:
+            return
+        t = TransformStamped()
+        t.header.stamp = self.get_clock().now().to_msg()
+        t.header.frame_id = "map"
+        t.child_frame_id = "base_link"
+        t.transform.rotation.w = 1.0
         self.pub_robot.publish(t)
 
     @staticmethod
@@ -189,7 +209,7 @@ class FakeVicon(Node):
 
         self.pub_human.publish(t)
 
-    def model_states_callback(self, msg: ModelStates):
+    def model_states_callback(self, msg):
         if not self.get_parameter("use_gazebo_human_in_world").get_parameter_value().bool_value:
             return
         if "human" not in msg.name:

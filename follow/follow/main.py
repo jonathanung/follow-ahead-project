@@ -42,9 +42,9 @@ from lstm_fc import HumanActionPredictor, TrajectoryBuffer, INPUT_LENGTH
 CELL_SIZE = 0.5          # metres per grid cell (must match planner.py)
 DECISION_HZ = 5          # Hz — how often MCTS runs
 TIME_BUDGET = 0.15       # seconds per MCTS call (150 ms, matches paper)
-ROBOT_VEL = 0.6          # m/s base linear speed
-ROBOT_VEL_FAST = 0.9     # m/s fast speed (1.5x)
-TURN_SPEED = 1.0         # rad/s angular speed when turning to face direction
+ROBOT_VEL = 0.5          # m/s base linear speed
+ROBOT_VEL_FAST = 0.75    # m/s fast speed (1.5x)
+TURN_SPEED = 0.6         # rad/s angular speed when turning
 
 # Absolute yaw for each grid direction (radians)
 _ACTION_TO_YAW = {
@@ -166,14 +166,8 @@ class FollowAheadNode(Node):
         """Update stored robot pose from vicon/robot/root."""
 
         orient = robot.transform.rotation
-        r = R.from_quat([orient.w, orient.x, orient.y, orient.z])
-        robot_z = r.as_euler('zyx', degrees=False)[2]
-        robot_z -= math.pi / 2
-
-        if robot_z < -math.pi:
-            robot_z += 2 * math.pi
-        if robot_z > math.pi:
-            robot_z -= 2 * math.pi
+        r = R.from_quat([orient.x, orient.y, orient.z, orient.w])
+        robot_z = r.as_euler('zyx', degrees=False)[0]
 
         robot_p = robot.transform.translation
 
@@ -199,14 +193,9 @@ class FollowAheadNode(Node):
         """
 
         orient = helmet.transform.rotation
-        r = R.from_quat([orient.w, orient.x, orient.y, orient.z])
+        r = R.from_quat([orient.x, orient.y, orient.z, orient.w])
 
-        human_z = r.as_euler('zyx', degrees=False)[2]
-        human_z -= math.pi / 2
-        if human_z < -math.pi:
-            human_z += 2 * math.pi
-        if human_z > math.pi:
-            human_z -= 2 * math.pi
+        human_z = r.as_euler('zyx', degrees=False)[0]
         human_p = helmet.transform.translation
         if self.sim:
             human_x, human_y = human_p.x, human_p.y

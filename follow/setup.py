@@ -14,7 +14,11 @@ setup(
             'params/nav2_params.yaml',
             'params/vicon_params.yaml',
         ]),
-        ('share/' + package_name + '/launch', ['launch/follow.launch.py']),  # add this
+        ('share/' + package_name + '/launch', [
+            'launch/follow.launch.py',
+            'launch/sim.launch.py',
+        ]),
+        ('share/' + package_name + '/rviz', ['rviz/sim.rviz']),
         ('share/' + package_name + '/include', [
             'include/cropped.yaml',
             'include/cropped.pgm',
@@ -34,6 +38,7 @@ setup(
     entry_points={
         'console_scripts': [
             'main = follow.main:main',
-            'fake_vicon = follow.fake_vicon:main',  # add this
+            'fake_vicon = follow.fake_vicon:main',
+            'fake_odom = follow.fake_odom:main',
         ],
     },)
