@@ -1,6 +1,6 @@
 vicon_client:
   ros__parameters:
-    hostname:: "127.0.0.1"
+    hostname: "127.0.0.1"
     buffer_size: 200
     namespace: "vicon"
     world_frame: "map"

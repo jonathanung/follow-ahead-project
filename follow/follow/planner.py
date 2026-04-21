@@ -43,11 +43,11 @@ from state import FollowState
 MAX_DEPTH        = 20
 GAMMA            = 0.95
 STAY_DISTANCE    = 1.5   # [m] - aligned with ROS1 stay() logic
-ROBOT_VEL        = 0.6   # [m/step] normal
-ROBOT_VEL_FAST   = 0.9   # [m/step] (0.6 * 1.5)
-HUMAN_VEL        = 0.6   # [m/step]
-ROBOT_TURN       = math.radians(45.0)  # [rad]
-HUMAN_TURN       = math.radians(10.0)  # [rad]
+ROBOT_VEL        = 0.5   # [m/step] normal
+ROBOT_VEL_FAST   = 0.75  # [m/step] (0.5 * 1.5)
+HUMAN_VEL        = 0.5   # [m/step]
+ROBOT_TURN       = math.radians(30.0)  # [rad]
+HUMAN_TURN       = math.radians(8.0)   # [rad]
 EXPANSION_TIME   = 0.15  # [s] (5 Hz search budget)
 
 SAFETY_R = 0.5   # [m] keep-out radius
@@ -66,7 +66,11 @@ try:
     _rl.load_model(_MODEL_PATH)
     print(f"[planner] RL model loaded from: {_MODEL_PATH}.zip")
 except Exception as e:
-    print(f"[planner] WARNING: could not load RL model ({e}). rl_value() will return 0.")
+    import logging
+    logging.getLogger(__name__).error(
+        f"[planner] FATAL: could not load RL model from {_MODEL_PATH} — {e}. "
+        "MCTS will use zero value function, which severely degrades performance."
+    )
     _rl = None
 
 
