@@ -1,0 +1,17 @@
+/**:
+  ros__parameters:
+
+    # --- mode ---
+    sim: true                # true = simulation, false = real robot with Vicon
+
+    # --- grid ---
+    cell_size: 0.5           # metres per planning grid cell (must match planner.py)
+
+    # --- timing ---
+    decision_hz: 5.0         # how often MCTS replans (Hz)
+    time_budget: 0.15        # wall-clock seconds per MCTS call (= 1/decision_hz * ~75%)
+
+    # --- motion ---
+    robot_vel: 0.9           # m/s base speed — must exceed human (0.8 m/s) to lead
+    robot_vel_fast: 1.3      # m/s catch-up speed (planner 'fast_*' actions)
+    turn_speed: 2.0          # rad/s angular speed when steering

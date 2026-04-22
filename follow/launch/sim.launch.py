@@ -1,14 +1,36 @@
 import os
+import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-def generate_launch_description():
+def launch_setup(context, *args, **kwargs):
     pkg = get_package_share_directory('follow')
+
+    test_case = LaunchConfiguration('test_case').perform(context)
+
+    cases_file = os.path.join(pkg, 'params', 'test_cases.yaml')
+    with open(cases_file, 'r') as f:
+        all_cases = yaml.safe_load(f)['test_cases']
+
+    if test_case not in all_cases:
+        available = ', '.join(all_cases.keys())
+        raise ValueError(f"Unknown test_case '{test_case}'. Available: {available}")
+
+    raw = dict(all_cases[test_case])
+    raw.pop('description', None)
+
+    # Split robot start params (→ fake_odom) from human motion params (→ fake_vicon)
+    robot_params = {
+        'start_x':     raw.pop('robot_start_x',     0.0),
+        'start_y':     raw.pop('robot_start_y',      0.0),
+        'start_theta': raw.pop('robot_start_theta',  0.0),
+    }
+    human_params = raw  # everything that remains
 
     follow_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -22,18 +44,17 @@ def generate_launch_description():
         executable='fake_vicon',
         name='fake_vicon',
         output='screen',
-        parameters=[{
-            'human_motion_mode': 'circle',
-            'circle_radius': 2.5,
-            'circle_angular_speed': 0.2,   # linear speed = r * w = 0.5 m/s
-        }]
+        parameters=[human_params],
     )
+
+    main_params = os.path.join(pkg, 'params', 'main_params.yaml')
 
     main_node = Node(
         package='follow',
         executable='main',
         name='follow_ahead',
         output='screen',
+        parameters=[main_params, {'sim': True}],
     )
 
     fake_odom_node = Node(
@@ -41,11 +62,7 @@ def generate_launch_description():
         executable='fake_odom',
         name='fake_odom',
         output='screen',
-        parameters=[{
-            'start_x': 0.0,
-            'start_y': 0.0,
-            'start_theta': 0.0,
-        }]
+        parameters=[robot_params],
     )
 
     rviz_node = Node(
@@ -56,15 +73,18 @@ def generate_launch_description():
         output='screen',
     )
 
+    return [follow_launch, fake_odom_node, fake_vicon_node, main_node, rviz_node]
+
+
+def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
-            'human_motion_mode',
-            default_value='straight',
-            description='Scripted human motion: straight | circle | rectangle'
+            'test_case',
+            default_value='circle',
+            description=(
+                'Human motion scenario to run. '
+                'Options: circle | stationary | square | oscillate | zigzag'
+            )
         ),
-        follow_launch,
-        fake_odom_node,
-        fake_vicon_node,
-        main_node,
-        rviz_node,
+        OpaqueFunction(function=launch_setup),
     ])
