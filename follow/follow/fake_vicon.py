@@ -34,6 +34,13 @@ class FakeVicon(Node):
         self.declare_parameter("straight_line_heading_rad", 0.0)
         self.declare_parameter("straight_line_ping_pong", True)
 
+        self.declare_parameter("stationary_x", 2.0)
+        self.declare_parameter("stationary_y", 0.0)
+
+        self.declare_parameter("zigzag_segment_length", 1.5)
+        self.declare_parameter("zigzag_speed", 0.35)
+        self.declare_parameter("zigzag_angle_deg", 40.0)
+
         self.get_logger().info(
             'fake_vicon: vicon/helmet/root scripted motion (see human_motion_mode). '
             'Gazebo model "human" pose: use_gazebo_human_in_world:=true'
@@ -109,8 +116,34 @@ class FakeVicon(Node):
         t.child_frame_id = "helmet"
         t.transform.translation.z = 0.0
 
-        # circle — the human walks in a circle. You can tune the radius and angular speed.
-        if mode == "circle":
+        if mode == "stationary":
+            t.transform.translation.x = self.get_parameter("stationary_x").get_parameter_value().double_value
+            t.transform.translation.y = self.get_parameter("stationary_y").get_parameter_value().double_value
+            yaw = 0.0
+
+        elif mode == "zigzag":
+            seg_len = self.get_parameter("zigzag_segment_length").get_parameter_value().double_value
+            spd     = self.get_parameter("zigzag_speed").get_parameter_value().double_value
+            angle   = math.radians(self.get_parameter("zigzag_angle_deg").get_parameter_value().double_value)
+
+            seg_dur   = seg_len / spd if spd > 0.0 else 1.0
+            period    = 2.0 * seg_dur
+            n_periods = int(elapsed / period)
+            ph        = elapsed % period
+            base_x    = n_periods * 2.0 * seg_len * math.cos(angle)
+
+            if ph < seg_dur:
+                alpha = ph / seg_dur
+                t.transform.translation.x = base_x + alpha * seg_len * math.cos(angle)
+                t.transform.translation.y = alpha * seg_len * math.sin(angle)
+                yaw = angle
+            else:
+                alpha = (ph - seg_dur) / seg_dur
+                t.transform.translation.x = base_x + seg_len * math.cos(angle) + alpha * seg_len * math.cos(angle)
+                t.transform.translation.y = seg_len * math.sin(angle) - alpha * seg_len * math.sin(angle)
+                yaw = -angle
+
+        elif mode == "circle":
             r = self.get_parameter("circle_radius").get_parameter_value().double_value
             w = self.get_parameter(
                 "circle_angular_speed"

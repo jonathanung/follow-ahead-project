@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
     vicon_params_file = LaunchConfiguration("vicon_params").perform(context)
     use_sim_time_str = LaunchConfiguration("use_sim_time").perform(context)
     use_sim_time = use_sim_time_str.lower() == 'true'
+    use_vicon = LaunchConfiguration("use_vicon").perform(context).lower() == 'true'
 
     map_to_odom_tf = Node(
         package='tf2_ros',
@@ -77,13 +78,10 @@ def launch_setup(context, *args, **kwargs):
         }.items()
     )
 
-    return [
-        map_to_odom_tf,
-        # vicon_node,  # uncomment for real hardware
-        map_server_node,
-        lifecycle_manager_node,
-        nav2_launch,
-    ]
+    nodes = [map_to_odom_tf, map_server_node, lifecycle_manager_node, nav2_launch]
+    if use_vicon:
+        nodes.append(vicon_node)
+    return nodes
 
 def generate_launch_description():
     return LaunchDescription([
@@ -106,6 +104,11 @@ def generate_launch_description():
             'use_sim_time',
             default_value='false',
             description='Use simulation clock (true when running with Gazebo)'
+        ),
+        DeclareLaunchArgument(
+            'use_vicon',
+            default_value='false',
+            description='Start the real Vicon client node (true for real robot, false for sim)'
         ),
         OpaqueFunction(function=launch_setup),
     ])

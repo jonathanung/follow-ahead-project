@@ -13,10 +13,13 @@ setup(
         ('share/' + package_name + '/params', [
             'params/nav2_params.yaml',
             'params/vicon_params.yaml',
+            'params/test_cases.yaml',
+            'params/main_params.yaml',
         ]),
         ('share/' + package_name + '/launch', [
             'launch/follow.launch.py',
             'launch/sim.launch.py',
+            'launch/robot.launch.py',
         ]),
         ('share/' + package_name + '/rviz', ['rviz/sim.rviz']),
         ('share/' + package_name + '/include', [

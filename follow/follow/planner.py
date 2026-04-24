@@ -166,10 +166,14 @@ def _node_value(state: FollowState) -> float:
 # MCTS helpers
 # ---------------------------------------------------------------------------
 
+STAY_ALPHA_MAX = 70.0   # [deg] — only STAY when inside human's forward cone
+
 def _stay_bool(state: FollowState, use_stay=False):
     if not use_stay:
         return False
-    return state.distance > STAY_DISTANCE
+    # Only stop when the robot is already ahead of the human (low alpha)
+    # AND far enough that it doesn't need to keep moving.
+    return state.distance > STAY_DISTANCE and state.alpha < STAY_ALPHA_MAX
 
 
 def _expand_robot(node: Node):
