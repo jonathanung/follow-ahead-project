@@ -27,3 +27,4 @@ logs/
 *.egg-info/
 dist/
 build/
+claude_context.md

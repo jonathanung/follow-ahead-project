@@ -55,6 +55,7 @@ def launch_setup(context, *args, **kwargs):
         name='follow_ahead',
         output='screen',
         parameters=[main_params, {'sim': True}],
+        additional_env={'FOLLOW_TEST_CASE': test_case},
     )
 
     fake_odom_node = Node(
@@ -83,7 +84,8 @@ def generate_launch_description():
             default_value='circle',
             description=(
                 'Human motion scenario to run. '
-                'Options: circle | stationary | square | oscillate | zigzag'
+                'Options: circle | stationary | square | oscillate | zigzag | '
+                'gentle_arc | approach_and_hold | gentle_zigzag'
             )
         ),
         OpaqueFunction(function=launch_setup),

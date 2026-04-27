@@ -12,6 +12,8 @@
     time_budget: 0.15        # wall-clock seconds per MCTS call (= 1/decision_hz * ~75%)
 
     # --- motion ---
-    robot_vel: 0.9           # m/s base speed — must exceed human (0.8 m/s) to lead
-    robot_vel_fast: 1.3      # m/s catch-up speed (planner 'fast_*' actions)
-    turn_speed: 2.0          # rad/s angular speed when steering
+    # QBot Platform hardware limits (from qbot_driver/params/qbot_nav2.yaml):
+    #   max linear:  0.6 m/s   max angular: 0.5 rad/s   max accel: 0.5 m/s²
+    robot_vel: 0.5           # m/s normal speed — keeps headroom for angular motion
+    robot_vel_fast: 0.6      # m/s catch-up speed (hardware max)
+    turn_speed: 0.5          # rad/s (hardware max angular velocity)
