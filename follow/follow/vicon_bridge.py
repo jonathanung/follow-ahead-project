@@ -1,47 +1,41 @@
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped, TransformStamped
+from geometry_msgs.msg import TransformStamped
+import tf2_ros
 
 class ViconBridge(Node):
     def __init__(self):
         super().__init__('vicon_bridge')
-        self.declare_parameter('human_subject', 'helmet')
-        self.declare_parameter('human_segment', 'root')
-        self.declare_parameter('robot_subject', 'qbot')
-        self.declare_parameter('robot_segment', 'root')
-        self.declare_parameter('vicon_namespace', 'vicon')
-
-        ns        = self.get_parameter('vicon_namespace').get_parameter_value().string_value
-        human_sub = self.get_parameter('human_subject').get_parameter_value().string_value
-        human_seg = self.get_parameter('human_segment').get_parameter_value().string_value
-        robot_sub = self.get_parameter('robot_subject').get_parameter_value().string_value
-        robot_seg = self.get_parameter('robot_segment').get_parameter_value().string_value
-
+        self.declare_parameter('human_tf', 'vicon/follow_ahead_human1/follow_ahead_human1')
+        self.declare_parameter('robot_tf', 'vicon/qbot_follow_ahead/qbot_follow_ahead')
+        self.declare_parameter('world_frame', 'world')
+        self.human_tf = self.get_parameter('human_tf').get_parameter_value().string_value
+        self.robot_tf = self.get_parameter('robot_tf').get_parameter_value().string_value
+        self.world = self.get_parameter('world_frame').get_parameter_value().string_value
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
         self.pub_human = self.create_publisher(TransformStamped, 'vicon/helmet/root', 10)
         self.pub_robot = self.create_publisher(TransformStamped, 'vicon/robot/root', 10)
+        self.create_timer(0.05, self.update)
+        self.get_logger().info(f'vicon_bridge ready | human={self.human_tf} robot={self.robot_tf}')
 
-        self.create_subscription(PoseStamped, f'/{ns}/{human_sub}/{human_seg}', self.human_cb, 10)
-        self.create_subscription(PoseStamped, f'/{ns}/{robot_sub}/{robot_seg}', self.robot_cb, 10)
+    def update(self):
+        now = rclpy.time.Time()
+        self._publish(self.human_tf, 'helmet', self.pub_human, now)
+        self._publish(self.robot_tf, 'base_link', self.pub_robot, now)
 
-        self.get_logger().info(f'vicon_bridge ready | human=/{ns}/{human_sub}/{human_seg} robot=/{ns}/{robot_sub}/{robot_seg}')
-
-    def _convert(self, msg: PoseStamped, child_frame: str) -> TransformStamped:
-        t = TransformStamped()
-        t.header = msg.header
-        t.header.frame_id = 'map'
-        t.child_frame_id = child_frame
-        t.transform.translation.x = msg.pose.position.x
-        t.transform.translation.y = msg.pose.position.y
-        t.transform.translation.z = msg.pose.position.z
-        t.transform.rotation = msg.pose.orientation
-        return t
-
-    def human_cb(self, msg: PoseStamped):
-        self.pub_human.publish(self._convert(msg, 'helmet'))
-
-    def robot_cb(self, msg: PoseStamped):
-        self.pub_robot.publish(self._convert(msg, 'base_link'))
-
+    def _publish(self, source_frame, child_frame, publisher, now):
+        try:
+            t = self.tf_buffer.lookup_transform(self.world, source_frame, now)
+            out = TransformStamped()
+            out.header.stamp = self.get_clock().now().to_msg()
+            out.header.frame_id = 'map'
+            out.child_frame_id = child_frame
+            out.transform = t.transform
+            publisher.publish(out)
+        except Exception:
+            pass
+            
 def main():
     rclpy.init()
     node = ViconBridge()
