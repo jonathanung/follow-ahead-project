@@ -1,0 +1,3 @@
+elapsed_s,robot_x,robot_y,robot_theta,human_x,human_y,human_theta,distance,alpha_deg,alpha_rad,dist_error,r_d,r_alpha,reward,action
+2.982,0.0,0.0,0.0,2.492,0.2,1.6509,2.5,90.0,1.5708,1.0,0.375,-1.0,-0.625,fast_left
+3.221,2.5,1.002,1.5728,2.4795,0.3193,1.6989,0.683,9.055,0.158,0.817,0.183,0.6378,0.8208,fast_left

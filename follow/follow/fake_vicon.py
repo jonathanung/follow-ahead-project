@@ -41,6 +41,10 @@ class FakeVicon(Node):
         self.declare_parameter("zigzag_speed", 0.35)
         self.declare_parameter("zigzag_angle_deg", 40.0)
 
+        # Delay before the human starts moving — gives the main node time to load
+        # its ML models (LSTM + RL) before the scene begins.
+        self.declare_parameter("start_delay_sec", 6.0)
+
         self.get_logger().info(
             'fake_vicon: vicon/helmet/root scripted motion (see human_motion_mode). '
             'Gazebo model "human" pose: use_gazebo_human_in_world:=true'
@@ -102,7 +106,8 @@ class FakeVicon(Node):
         if self.get_parameter("use_gazebo_human_in_world").get_parameter_value().bool_value:
             return
 
-        elapsed = time.time() - self.start_time
+        delay = self.get_parameter("start_delay_sec").get_parameter_value().double_value
+        elapsed = max(0.0, time.time() - self.start_time - delay)
         mode = (
             self.get_parameter("human_motion_mode")
             .get_parameter_value()

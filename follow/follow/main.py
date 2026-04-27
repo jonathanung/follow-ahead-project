@@ -1,3 +1,4 @@
+import csv
 import os
 import sys
 import math
@@ -8,6 +9,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import TransformStamped, Twist
 from nav_msgs.msg import OccupancyGrid
 from visualization_msgs.msg import Marker
+from builtin_interfaces.msg import Duration
 from scipy.spatial.transform import Rotation as R
 
 def _find_ws_root(start: str) -> str:
@@ -31,6 +33,17 @@ sys.path.insert(0, os.path.join(_FA_ROOT, 'RL_sim'))
 
 from lstm_fc import HumanActionPredictor, TrajectoryBuffer, INPUT_LENGTH
 from state import FollowState
+from reward import reward as paper_reward
+
+_LOG_COLS = [
+    'elapsed_s',
+    'robot_x', 'robot_y', 'robot_theta',
+    'human_x', 'human_y', 'human_theta',
+    'distance', 'alpha_deg', 'alpha_rad',
+    'dist_error',
+    'r_d', 'r_alpha', 'reward',
+    'action', 'tracking_ok',
+]
 
 
 def _to_grid(x: float, y: float, cell_size: float) -> tuple:
@@ -97,6 +110,13 @@ class FollowAheadNode(Node):
         self.best_action    = None
         self.marker_id      = 0
 
+        # --- data logging ---
+        self._log_rows      = []
+        self._log_start     = time.time()
+        self._log_test_case = os.environ.get('FOLLOW_TEST_CASE', 'unknown')
+        self._log_dir       = os.path.expanduser('~/follow_data')
+        os.makedirs(self._log_dir, exist_ok=True)
+
         lstm_model_path = os.path.join(
             _FA_ROOT, 'lstm-fc', 'outputs', 'hypertune_v3', 'best_model.pt'
         )
@@ -128,7 +148,8 @@ class FollowAheadNode(Node):
         self.get_logger().info(
             f"FollowAheadNode ready | sim={self.sim} cell_size={self.cell_size} "
             f"decision_hz={self.decision_hz} robot_vel={self.robot_vel} "
-            f"robot_vel_fast={self.robot_vel_fast} turn_speed={self.turn_speed}"
+            f"robot_vel_fast={self.robot_vel_fast} turn_speed={self.turn_speed} "
+            f"log_dir={self._log_dir} test_case={self._log_test_case}"
         )
 
     # ------------------------------------------------------------------ #
@@ -198,12 +219,19 @@ class FollowAheadNode(Node):
         self.pub_marker("human", self.marker_id, vis_state)
         self.pub_marker("robot", 0, vis_state, arrow=True)
         self.pub_marker("human", 0, vis_state, arrow=True)
-        self.marker_id += 1
+        self.marker_id = (self.marker_id + 1) % 2000
 
         state = FollowState(
             human_x=human_x,     human_y=human_y,     human_theta=human_z,
             robot_x=self.robot_x, robot_y=self.robot_y, robot_theta=self.robot_z,
         )
+
+        # ── SAFETY STOP (comment out the block below to disable) ────────────
+        if state.distance < 0.5:
+            self.move_robot.publish(Twist())
+            self.get_logger().warn(f"SAFETY STOP: dist={state.distance:.2f}m < 0.5m")
+            return
+        # ─────────────────────────────────────────────────────────────────────
 
         human_probs = None
         if self.traj_buffer.ready:
@@ -225,6 +253,8 @@ class FollowAheadNode(Node):
             f"dist={state.distance:.2f}m  alpha={state.alpha:.1f}°"
         )
 
+        self._record(state, action)
+
     # ------------------------------------------------------------------ #
     #  Motion                                                              #
     # ------------------------------------------------------------------ #
@@ -234,10 +264,54 @@ class FollowAheadNode(Node):
             self.best_action, self.robot_vel, self.robot_vel_fast, self.turn_speed
         )
         self.move_robot.publish(twist)
-        self.get_logger().info(
+        self.get_logger().debug(
             f"move() → action={self.best_action}  "
             f"linear.x={twist.linear.x:.2f}  angular.z={twist.angular.z:.2f}"
         )
+
+    # ------------------------------------------------------------------ #
+    #  Data logging                                                        #
+    # ------------------------------------------------------------------ #
+
+    def _record(self, state: FollowState, action: str):
+        from reward import r_d, r_alpha
+        rd  = r_d(state.distance)
+        ra  = r_alpha(state.alpha)
+        self._log_rows.append({
+            'elapsed_s':   round(time.time() - self._log_start, 3),
+            'robot_x':     round(state.robot_x, 4),
+            'robot_y':     round(state.robot_y, 4),
+            'robot_theta': round(state.robot_theta, 4),
+            'human_x':     round(state.human_x, 4),
+            'human_y':     round(state.human_y, 4),
+            'human_theta': round(state.human_theta, 4),
+            'distance':    round(state.distance, 4),
+            'alpha_deg':   round(state.alpha, 3),
+            'alpha_rad':   round(math.radians(state.alpha), 4),
+            'dist_error':  round(abs(state.distance - 1.5), 4),
+            'r_d':         round(rd, 4),
+            'r_alpha':     round(ra, 4),
+            'reward':      round(rd + ra, 4),
+            'action':      action or 'NONE',
+            'tracking_ok': state.alpha < 50.0 and 0.5 <= state.distance <= 4.0,
+        })
+
+    def _flush_log(self):
+        if not self._log_rows:
+            return
+        ts   = time.strftime('%Y%m%d_%H%M%S')
+        path = os.path.join(self._log_dir, f'{self._log_test_case}_{ts}.csv')
+        with open(path, 'w', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=_LOG_COLS)
+            w.writeheader()
+            w.writerows(self._log_rows)
+        self.get_logger().info(
+            f"Data log written → {path}  ({len(self._log_rows)} rows)"
+        )
+
+    def destroy_node(self):
+        self._flush_log()
+        super().destroy_node()
 
     # ------------------------------------------------------------------ #
     #  Visualisation                                                       #
@@ -249,8 +323,9 @@ class FollowAheadNode(Node):
         marker.header.stamp    = self.get_clock().now().to_msg()
         marker.ns     = name + "arrow" if arrow else name
         marker.id     = int(id)
-        marker.type   = 0 if arrow else 2   # 0=ARROW, 2=SPHERE
-        marker.action = 0                   # ADD
+        marker.type     = 0 if arrow else 2  # 0=ARROW, 2=SPHERE
+        marker.action   = 0                 # ADD
+        marker.lifetime = Duration(sec=30, nanosec=0)
 
         pose = state[0] if name == "robot" else state[1]
         marker.pose.position.x = float(pose[0])

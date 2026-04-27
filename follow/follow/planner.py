@@ -24,6 +24,7 @@ import copy
 import numpy as np
 
 from node import Node
+import simple_grid as _sg
 # from human_model import human_probabilities  # Removed as it's missing in algo-main
 
 # ---------------------------------------------------------------------------
@@ -43,10 +44,12 @@ from state import FollowState
 MAX_DEPTH        = 20
 GAMMA            = 0.95
 STAY_DISTANCE    = 1.5   # [m] - aligned with ROS1 stay() logic
-ROBOT_VEL        = 0.5   # [m/step] normal
-ROBOT_VEL_FAST   = 0.75  # [m/step] (0.5 * 1.5)
-HUMAN_VEL        = 0.5   # [m/step]
-ROBOT_TURN       = math.radians(30.0)  # [rad]
+# QBot Platform hardware limits → per-step values at 5 Hz (dt = 0.2 s):
+#   max linear 0.6 m/s, max angular 0.5 rad/s, max accel 0.5 m/s²
+ROBOT_VEL        = 0.10  # [m/step] 0.5 m/s × 0.2 s (normal)
+ROBOT_VEL_FAST   = 0.12  # [m/step] 0.6 m/s × 0.2 s (hardware max)
+HUMAN_VEL        = 0.08  # [m/step] 0.4 m/s × 0.2 s (slow-walk, reachable by QBot)
+ROBOT_TURN       = math.radians(6.0)   # [rad] 0.5 rad/s × 0.2 s ≈ 5.7° per step
 HUMAN_TURN       = math.radians(8.0)   # [rad]
 EXPANSION_TIME   = 0.15  # [s] (5 Hz search budget)
 
@@ -187,7 +190,13 @@ def _expand_robot(node: Node):
         # --- Safety Pruning (Deviation alignment) ---
         if not is_safe(next_s):
             continue
-            
+
+        # --- Obstacle check via costmap grid ---
+        gx = int(round(next_s.robot_x / 0.5))
+        gy = int(round(next_s.robot_y / 0.5))
+        if not _sg.is_valid((gx, gy)):
+            continue
+
         child = Node(next_s, parent=node,
                      action=action, prior=p, node_type='human')
         node.children.append(child)
