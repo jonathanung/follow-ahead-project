@@ -1,0 +1,8 @@
+torch==2.6.0
+stable-baselines3[extra]==2.7.1
+gymnasium==1.2.3
+numpy>=2.1.0
+scipy==1.13.0
+matplotlib==3.9.0
+typing-extensions
+treelib
