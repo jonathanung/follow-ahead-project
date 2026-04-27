@@ -1,0 +1,19 @@
+running develop
+running egg_info
+writing follow.egg-info/PKG-INFO
+writing dependency_links to follow.egg-info/dependency_links.txt
+writing entry points to follow.egg-info/entry_points.txt
+writing requirements to follow.egg-info/requires.txt
+writing top-level names to follow.egg-info/top_level.txt
+reading manifest file 'follow.egg-info/SOURCES.txt'
+writing manifest file 'follow.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.12/site-packages/follow.egg-link (link to .)
+Installing fake_odom script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+Installing fake_vicon script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+Installing main script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+
+Installed /home/asa410/ros2_ws/src/follow-ahead-project/build/follow
+running symlink_data
+symbolically linking /home/asa410/ros2_ws/src/follow-ahead-project/build/follow/resource/follow -> /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages
+error: [Errno 17] File exists: '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/resource/follow' -> '/home/asa410/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages/follow'

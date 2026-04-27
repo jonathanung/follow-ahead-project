@@ -215,7 +215,10 @@ def _select(node):
     while not node.is_leaf():
         if depth >= MAX_DEPTH:
             break
-        node = node.best_child()
+        best = node.best_child()
+        if best is None:
+            break
+        node = best
         depth += 1
     return node
 
@@ -305,5 +308,9 @@ class MCTSPlanner:
             print(f"[MCTSPlanner] root visits: {root.visits}")
             print(f"[MCTSPlanner] children: "
                   f"{[(c.action, c.visits) for c in root.children]}")
-
-        return root.best_action_child().action
+        best = root.best_action_child()
+        if best is None:
+            self.get_logger().warning("MCTS: no safe actions found, defaulting to straight") if hasattr(self, 'get_logger') else None
+            return 'straight'
+        return best.action
+        # return root.best_action_child().action

@@ -1,0 +1,21 @@
+[0.679s] Invoking command in '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/asa410/ros2_ws/src/follow-ahead-project/build/follow/build --no-deps symlink_data
+[0.871s] running develop
+[0.959s] running egg_info
+[0.969s] writing follow.egg-info/PKG-INFO
+[0.977s] writing dependency_links to follow.egg-info/dependency_links.txt
+[0.985s] writing entry points to follow.egg-info/entry_points.txt
+[0.990s] writing requirements to follow.egg-info/requires.txt
+[0.996s] writing top-level names to follow.egg-info/top_level.txt
+[1.069s] reading manifest file 'follow.egg-info/SOURCES.txt'
+[1.084s] writing manifest file 'follow.egg-info/SOURCES.txt'
+[1.102s] running build_ext
+[1.104s] Creating /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.12/site-packages/follow.egg-link (link to .)
+[1.119s] Installing fake_odom script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+[1.127s] Installing fake_vicon script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+[1.136s] Installing main script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow
+[1.149s] 
+[1.150s] Installed /home/asa410/ros2_ws/src/follow-ahead-project/build/follow
+[1.152s] running symlink_data
+[1.155s] symbolically linking /home/asa410/ros2_ws/src/follow-ahead-project/build/follow/resource/follow -> /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages
+[1.156s] error: [Errno 17] File exists: '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/resource/follow' -> '/home/asa410/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages/follow'
+[1.180s] Invoked command in '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow' returned '1': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.12/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/asa410/ros2_ws/src/follow-ahead-project/build/follow/build --no-deps symlink_data

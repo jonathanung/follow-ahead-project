@@ -43,5 +43,7 @@ setup(
             'main = follow.main:main',
             'fake_vicon = follow.fake_vicon:main',
             'fake_odom = follow.fake_odom:main',
+            'vicon_bridge = follow.vicon_bridge:main',
         ],
     },)
+o

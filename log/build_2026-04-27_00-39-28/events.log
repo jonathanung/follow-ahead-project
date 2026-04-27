@@ -1,0 +1,37 @@
+[0.000000] (-) TimerEvent: {}
+[0.000203] (follow) JobQueued: {'identifier': 'follow', 'dependencies': OrderedDict()}
+[0.001831] (follow) JobStarted: {'identifier': 'follow'}
+[0.097324] (-) TimerEvent: {}
+[0.197492] (-) TimerEvent: {}
+[0.297637] (-) TimerEvent: {}
+[0.397855] (-) TimerEvent: {}
+[0.498170] (-) TimerEvent: {}
+[0.598347] (-) TimerEvent: {}
+[0.666908] (follow) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/build', '--no-deps', 'symlink_data'], 'cwd': '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow', 'env': {'USER': 'asa410', 'SSH_CLIENT': '172.17.32.16 59357 24', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/asa410/.cursor-server/bin/linux-x64/e9ee1339915a927dfb2df4a836dd9c8337e17cc0/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/asa410/.local/lib:/usr/local/cuda/lib64:/usr/local/cuda/lib64:/home/asa410/.local/lib:', 'BROWSER': '/home/asa410/.cursor-server/bin/linux-x64/e9ee1339915a927dfb2df4a836dd9c8337e17cc0/bin/helpers/browser.sh', 'HOME': '/home/asa410', 'OLDPWD': '/home/asa410/ros2_ws/src', 'TERM_PROGRAM_VERSION': '3.2.11', 'VSCODE_IPC_HOOK_CLI': '/run/user/650128/vscode-ipc-193b190d-68e9-46b3-9f52-c60dc3bd840e.sock', 'VSCODE_GIT_ASKPASS_MAIN': '/home/asa410/.cursor-server/bin/linux-x64/e9ee1339915a927dfb2df4a836dd9c8337e17cc0/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/asa410/.cursor-server/bin/linux-x64/e9ee1339915a927dfb2df4a836dd9c8337e17cc0/node', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/650128/bus', 'COLORTERM': 'truecolor', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'OVSX_REGISTRY_URL': 'https://open-vsx.org', 'LOGNAME': 'asa410', '_': '/usr/bin/colcon', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '899', 'PATH': '/home/asa410/.local/bin:/opt/anaconda3/bin:/home/asa410/.cursor-server/bin/linux-x64/e9ee1339915a927dfb2df4a836dd9c8337e17cc0/bin/remote-cli:/opt/rust/toolchains/stable-x86_64-unknown-linux-gnu/bin/:/usr/local/cuda/bin:/home/asa410/.cursor-server/bin/linux-x64/e9ee1339915a927dfb2df4a836dd9c8337e17cc0/bin/remote-cli:/opt/rust/toolchains/stable-x86_64-unknown-linux-gnu/bin/:/usr/local/cuda/bin:/home/asa410/.local/bin:/opt/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/asa410/.dotnet/tools:/usr/local/clion/bin:/usr/local/idea/bin:/usr/local/goland/bin:/usr/local/idea/bin:/usr/local/pycharm/bin:/usr/local/rubymine/bin:/snap/android-studio/current/android-studio/bin:/usr/local/clion/bin:/usr/local/idea/bin:/usr/local/goland/bin:/usr/local/idea/bin:/usr/local/pycharm/bin:/usr/local/rubymine/bin:/snap/android-studio/current/android-studio/bin', 'XDG_RUNTIME_DIR': '/run/user/650128', 'LANG': 'en_US.UTF-8', 'DOTNET_BUNDLE_EXTRACT_BASE_DIR': '/home/asa410/.cache/dotnet_bundle_extract', 'VSCODE_GIT_IPC_HANDLE': '/run/user/650128/vscode-git-690c7c67ab.sock', 'TERM_PROGRAM': 'vscode', 'SHELL': '/bin/bash', 'VSCODE_GIT_IPC_AUTH_TOKEN': 'f858d317201c99eae6ce009231105e79079bc88fc6ea6336fd397e35ec8c5e02', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow', 'SSH_CONNECTION': '172.17.32.16 59357 172.16.59.2 24', 'XDG_DATA_DIRS': '/usr/share/gnome:/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'COLCON': '1', 'PYTHONPATH': '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.12/site-packages:'}, 'shell': False}
+[0.698443] (-) TimerEvent: {}
+[0.798668] (-) TimerEvent: {}
+[0.873113] (follow) StdoutLine: {'line': b'running develop\n'}
+[0.898751] (-) TimerEvent: {}
+[0.961544] (follow) StdoutLine: {'line': b'running egg_info\n'}
+[0.971536] (follow) StdoutLine: {'line': b'writing follow.egg-info/PKG-INFO\n'}
+[0.979082] (follow) StdoutLine: {'line': b'writing dependency_links to follow.egg-info/dependency_links.txt\n'}
+[0.987079] (follow) StdoutLine: {'line': b'writing entry points to follow.egg-info/entry_points.txt\n'}
+[0.991997] (follow) StdoutLine: {'line': b'writing requirements to follow.egg-info/requires.txt\n'}
+[0.997962] (follow) StdoutLine: {'line': b'writing top-level names to follow.egg-info/top_level.txt\n'}
+[0.998810] (-) TimerEvent: {}
+[1.071567] (follow) StdoutLine: {'line': b"reading manifest file 'follow.egg-info/SOURCES.txt'\n"}
+[1.086434] (follow) StdoutLine: {'line': b"writing manifest file 'follow.egg-info/SOURCES.txt'\n"}
+[1.098898] (-) TimerEvent: {}
+[1.104880] (follow) StdoutLine: {'line': b'running build_ext\n'}
+[1.104945] (follow) StdoutLine: {'line': b'Creating /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/python3.12/site-packages/follow.egg-link (link to .)\n'}
+[1.121946] (follow) StdoutLine: {'line': b'Installing fake_odom script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow\n'}
+[1.129288] (follow) StdoutLine: {'line': b'Installing fake_vicon script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow\n'}
+[1.137954] (follow) StdoutLine: {'line': b'Installing main script to /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/lib/follow\n'}
+[1.151255] (follow) StdoutLine: {'line': b'\n'}
+[1.151384] (follow) StdoutLine: {'line': b'Installed /home/asa410/ros2_ws/src/follow-ahead-project/build/follow\n'}
+[1.154436] (follow) StdoutLine: {'line': b'running symlink_data\n'}
+[1.157130] (follow) StdoutLine: {'line': b'symbolically linking /home/asa410/ros2_ws/src/follow-ahead-project/build/follow/resource/follow -> /home/asa410/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages\n'}
+[1.158133] (follow) StderrLine: {'line': b"error: [Errno 17] File exists: '/home/asa410/ros2_ws/src/follow-ahead-project/build/follow/resource/follow' -> '/home/asa410/ros2_ws/src/follow-ahead-project/install/follow/share/ament_index/resource_index/packages/follow'\n"}
+[1.182415] (follow) CommandEnded: {'returncode': 1}
+[1.182661] (follow) JobEnded: {'identifier': 'follow', 'rc': 1}
+[1.195247] (-) EventReactorShutdown: {}

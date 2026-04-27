@@ -198,7 +198,7 @@ class FollowAheadNode(Node):
         self.pub_marker("human", self.marker_id, vis_state)
         self.pub_marker("robot", 0, vis_state, arrow=True)
         self.pub_marker("human", 0, vis_state, arrow=True)
-        self.marker_id += 1
+        # self.marker_id += 1
 
         state = FollowState(
             human_x=human_x,     human_y=human_y,     human_theta=human_z,
