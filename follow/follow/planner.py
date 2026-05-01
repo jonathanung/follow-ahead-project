@@ -224,7 +224,10 @@ def _select(node):
     while not node.is_leaf():
         if depth >= MAX_DEPTH:
             break
-        node = node.best_child()
+        best = node.best_child()
+        if best is None:
+            break
+        node = best
         depth += 1
     return node
 
@@ -320,13 +323,13 @@ class MCTSPlanner:
                   f"{[(c.action, c.visits) for c in root.children]}")
 
         if not root.children:
-            # All actions were safety-pruned.  Fall back to the action that
-            # maximises distance from the human (least unsafe), or 'straight'
-            # if we can't compute that.
             import logging as _log
             _log.getLogger(__name__).warning(
                 "[MCTSPlanner] all robot actions pruned — falling back to 'straight'"
             )
             return 'straight'
 
-        return root.best_action_child().action
+        best = root.best_action_child()
+        if best is None:
+            return 'straight'
+        return best.action

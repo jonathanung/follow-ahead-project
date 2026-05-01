@@ -25,6 +25,8 @@ class Node:
         return len(self.children) == 0
 
     def best_child(self, c=2.0):
+        if not self.children:
+            return None
         def ucb_with_tiebreak(n):
             # Prefer 'straight' action in ties if it exists
             score = n.ucb(c)
@@ -33,6 +35,8 @@ class Node:
         return max(self.children, key=ucb_with_tiebreak)
 
     def best_action_child(self):
+        if not self.children:
+            return None
         def visits_with_tiebreak(n):
             # Prefer 'straight' action in ties if it exists
             score = n.visits
