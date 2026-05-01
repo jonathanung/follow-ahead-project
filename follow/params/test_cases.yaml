@@ -16,9 +16,9 @@ test_cases:
     human_motion_mode: circle
     circle_radius: 2.5
     circle_angular_speed: 0.16      # linear = r * w = 2.5 * 0.16 = 0.4 m/s
-    # Robot: 1 m ahead of human in initial heading (North)
+    # Robot: 1.5 m ahead of human in initial heading (North)
     robot_start_x: 2.5
-    robot_start_y: 1.0
+    robot_start_y: 1.5
     robot_start_theta: 1.5708       # π/2 = facing North
 
   stationary:
@@ -32,6 +32,18 @@ test_cases:
     robot_start_y: 0.0
     robot_start_theta: 0.0          # facing East
 
+  straight:
+    description: "Person walks straight East indefinitely at 0.4 m/s"
+    human_motion_mode: straight
+    straight_line_speed: 0.4
+    straight_line_duration_sec: 100.0
+    straight_line_heading_rad: 0.0
+    straight_line_ping_pong: false
+    # Robot: 1.5 m ahead (East)
+    robot_start_x: 1.5
+    robot_start_y: 0.0
+    robot_start_theta: 0.0          # facing East
+
   square:
     description: "Person walks a 2x2m square at 0.4 m/s"
     # Human: starts at (0.5, -1.0) heading East (first leg)
@@ -41,8 +53,8 @@ test_cases:
     rect_speed: 0.4
     rect_start_x: 0.5
     rect_start_y: -1.0
-    # Robot: 1 m ahead (East) of human start
-    robot_start_x: 1.5
+    # Robot: 1.5 m ahead (East) of human start
+    robot_start_x: 2.0
     robot_start_y: -1.0
     robot_start_theta: 0.0          # facing East
 
@@ -54,8 +66,8 @@ test_cases:
     straight_line_duration_sec: 5.0
     straight_line_heading_rad: 0.0
     straight_line_ping_pong: true
-    # Robot: 1 m ahead (East)
-    robot_start_x: 1.0
+    # Robot: 1.5 m ahead (East)
+    robot_start_x: 1.5
     robot_start_y: 0.0
     robot_start_theta: 0.0          # facing East
 
@@ -66,8 +78,8 @@ test_cases:
     zigzag_segment_length: 1.5
     zigzag_speed: 0.4
     zigzag_angle_deg: 40.0
-    # Robot: 1 m ahead along the net East direction
-    robot_start_x: 1.0
+    # Robot: 1.5 m ahead along the net East direction
+    robot_start_x: 1.5
     robot_start_y: 0.0
     robot_start_theta: 0.6981       # 40° = facing same direction as first zigzag leg
 
@@ -82,9 +94,9 @@ test_cases:
     human_motion_mode: circle
     circle_radius: 5.0
     circle_angular_speed: 0.08      # linear = 5.0 * 0.08 = 0.4 m/s
-    # Robot: 1 m ahead of human (North) along initial tangent
+    # Robot: 1.5 m ahead of human (North) along initial tangent
     robot_start_x: 5.0
-    robot_start_y: 1.0
+    robot_start_y: 1.5
     robot_start_theta: 1.5708       # π/2 = facing North
 
   approach_and_hold:
@@ -107,7 +119,7 @@ test_cases:
     zigzag_segment_length: 2.0
     zigzag_speed: 0.4
     zigzag_angle_deg: 12.0
-    # Robot: 1 m ahead along net East direction
-    robot_start_x: 1.0
+    # Robot: 1.5 m ahead along net East direction
+    robot_start_x: 1.5
     robot_start_y: 0.0
     robot_start_theta: 0.2094       # 12°

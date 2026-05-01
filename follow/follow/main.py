@@ -228,10 +228,10 @@ class FollowAheadNode(Node):
         )
 
         # ── SAFETY STOP (comment out the block below to disable) ────────────
-        if state.distance < 0.5:
-            self.move_robot.publish(Twist())
-            self.get_logger().warn(f"SAFETY STOP: dist={state.distance:.2f}m < 0.5m")
-            return
+        # if state.distance < 0.5:
+        #     self.move_robot.publish(Twist())
+        #     self.get_logger().warn(f"SAFETY STOP: dist={state.distance:.2f}m < 0.5m")
+        #     return
         # ─────────────────────────────────────────────────────────────────────
 
         human_probs = None
@@ -392,8 +392,7 @@ class FollowAheadNode(Node):
             wx = ox + (i % w + 0.5) * res
             wy = oy + (i // w + 0.5) * res
             gx, gy = _to_grid(wx, wy, self.cell_size)
-            if 0 <= gx < simple_grid.GRID_SIZE and 0 <= gy < simple_grid.GRID_SIZE:
-                obstacles.add((gx, gy))
+            obstacles.add((gx, gy))
 
         simple_grid.OBSTACLES = obstacles
         self.get_logger().info(

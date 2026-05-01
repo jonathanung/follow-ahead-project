@@ -69,11 +69,11 @@ from nav_env import Environment   # defined in RL_sim/nav_env.py
 # (Kept as module-level constants so they are easy to spot and change.)
 # ---------------------------------------------------------------------------
 
-TOTAL_TIMESTEPS   = 500_000    # 500k steps — minimum for a robust following policy
+TOTAL_TIMESTEPS   = 1_000_000  # 1M steps — needed for tight 6°/step kinematics to converge
 N_ENVS            = 4          # Number of parallel envs for faster rollout collection
 POLICY            = "MlpPolicy" # Standard MLP actor-critic (no CNN needed for 4-dim obs)
 LEARNING_RATE     = 7e-4       # SB3's A2C default
-N_STEPS           = 5          # Steps per rollout per env (A2C default = 5)
+N_STEPS           = 20         # Matches MCTS MAX_DEPTH — V(s) trained on the same horizon MCTS evaluates
 GAMMA             = 0.99       # Discount factor
 ENT_COEF          = 0.01       # Entropy bonus — encourages exploration of the action space
 LOG_DIR           = "./logs/"
@@ -121,7 +121,16 @@ def make_env() -> gym.Env:
         max_steps  = 200   — longer episodes give the agent time to converge
     Returns a single gym.Env instance.
     """
-    return Environment(world_size=20.0, max_steps=200)
+    # Kinematics match MCTS planner constants (planner.py) exactly.
+    # world_size=10m: enough for follow-ahead geometry at 0.10 m/step.
+    return Environment(
+        robot_vel=0.10,
+        robot_vel_fast=0.12,
+        human_vel=0.08,
+        turn_angle_deg=6.0,
+        max_steps=500,
+        world_size=10.0,
+    )
 
 
 # ---------------------------------------------------------------------------
