@@ -75,12 +75,12 @@ class Environment(gym.Env):
 
     def __init__(
         self,
-        robot_vel: float = 0.5,
-        robot_vel_fast: float = 1.0,
-        human_vel: float = 0.3,
-        turn_angle_deg: float = 22.5,
-        max_steps: int = 200,
-        world_size: float = 20.0,
+        robot_vel: float = 0.10,       # 0.5 m/s × 0.2 s — matches MCTS ROBOT_VEL
+        robot_vel_fast: float = 0.12,  # 0.6 m/s × 0.2 s — matches MCTS ROBOT_VEL_FAST
+        human_vel: float = 0.08,       # 0.4 m/s × 0.2 s — matches MCTS HUMAN_VEL
+        turn_angle_deg: float = 6.0,   # 0.5 rad/s × 0.2 s — matches MCTS ROBOT_TURN
+        max_steps: int = 500,          # longer episodes at slow step size
+        world_size: float = 10.0,      # 10m box: robot travels ~0.10×500=50m max
         # Legacy aliases so old make_env(target_distance=...) calls don't crash
         target_distance: Optional[float] = None,   # unused — kept for back-compat
     ):

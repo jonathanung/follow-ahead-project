@@ -25,8 +25,12 @@ setup(
         ('share/' + package_name + '/include', [
             'include/cropped.yaml',
             'include/cropped.pgm',
-            'include/human_prob.pth',        # add this
-            'include/multiply_rewards_1.zip', # add this
+            'include/my_room.yaml',
+            'include/my_room.pgm',
+            'include/open.yaml',
+            'include/open.pgm',
+            'include/human_prob.pth',
+            'include/multiply_rewards_1.zip',
         ]),
         ('share/' + package_name + '/worlds', [
             'worlds/follow_world.world',

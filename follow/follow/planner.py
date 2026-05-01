@@ -243,12 +243,16 @@ def _run_tree(root, budget_fn, human_probs=None):
             value = _node_value(leaf.state)
             _backprop(leaf, value)
             continue
-            
-        if leaf.node_type == 'robot':
-            _expand_robot(leaf)
-        else:
-            _expand_human(leaf, human_probs)
-            
+
+        # Only expand true leaves — _select may return a non-leaf when MAX_DEPTH
+        # is hit mid-tree; re-expanding would append duplicate children and corrupt
+        # UCB counts.
+        if not leaf.children:
+            if leaf.node_type == 'robot':
+                _expand_robot(leaf)
+            else:
+                _expand_human(leaf, human_probs)
+
         if leaf.children:
             leaf = random.choice(leaf.children)
             value = _node_value(leaf.state)
@@ -314,5 +318,15 @@ class MCTSPlanner:
             print(f"[MCTSPlanner] root visits: {root.visits}")
             print(f"[MCTSPlanner] children: "
                   f"{[(c.action, c.visits) for c in root.children]}")
+
+        if not root.children:
+            # All actions were safety-pruned.  Fall back to the action that
+            # maximises distance from the human (least unsafe), or 'straight'
+            # if we can't compute that.
+            import logging as _log
+            _log.getLogger(__name__).warning(
+                "[MCTSPlanner] all robot actions pruned — falling back to 'straight'"
+            )
+            return 'straight'
 
         return root.best_action_child().action

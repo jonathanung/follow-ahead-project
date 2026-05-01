@@ -24,19 +24,39 @@ def launch_setup(context, *args, **kwargs):
     raw = dict(all_cases[test_case])
     raw.pop('description', None)
 
-    # Split robot start params (→ fake_odom) from human motion params (→ fake_vicon)
+    # Split robot start params (→ fake_odom) from human motion params (→ fake_vicon).
+    # Override args (robot_start_x / _y / _theta) let run_experiment.py inject
+    # per-run perturbations without touching test_cases.yaml.
+    yaml_x     = raw.pop('robot_start_x',     0.0)
+    yaml_y     = raw.pop('robot_start_y',      0.0)
+    yaml_theta = raw.pop('robot_start_theta',  0.0)
+
+    ox = LaunchConfiguration('robot_start_x').perform(context)
+    oy = LaunchConfiguration('robot_start_y').perform(context)
+    ot = LaunchConfiguration('robot_start_theta').perform(context)
+
     robot_params = {
-        'start_x':     raw.pop('robot_start_x',     0.0),
-        'start_y':     raw.pop('robot_start_y',      0.0),
-        'start_theta': raw.pop('robot_start_theta',  0.0),
+        'start_x':     float(ox) if ox else yaml_x,
+        'start_y':     float(oy) if oy else yaml_y,
+        'start_theta': float(ot) if ot else yaml_theta,
     }
     human_params = raw  # everything that remains
+
+    map_name = LaunchConfiguration('map').perform(context)
+    map_options = {
+        'my_room': os.path.join(pkg, 'include', 'my_room.yaml'),
+        'cropped': os.path.join(pkg, 'include', 'cropped.yaml'),
+        'open':    os.path.join(pkg, 'include', 'open.yaml'),
+    }
+    if map_name not in map_options:
+        raise ValueError(f"Unknown map '{map_name}'. Options: {list(map_options.keys())}")
+    map_file = map_options[map_name]
 
     follow_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg, 'launch', 'follow.launch.py')
         ),
-        launch_arguments={'use_sim_time': 'false'}.items()
+        launch_arguments={'use_sim_time': 'false', 'map_file': map_file}.items()
     )
 
     fake_vicon_node = Node(
@@ -55,15 +75,19 @@ def launch_setup(context, *args, **kwargs):
         name='follow_ahead',
         output='screen',
         parameters=[main_params, {'sim': True}],
-        additional_env={'FOLLOW_TEST_CASE': test_case},
+        additional_env={'FOLLOW_TEST_CASE': os.environ.get('FOLLOW_TEST_CASE', test_case)},
     )
+
+    odom_params = dict(robot_params)
+    if map_name == 'my_room':
+        odom_params['map_yaml_path'] = map_file
 
     fake_odom_node = Node(
         package='follow',
         executable='fake_odom',
         name='fake_odom',
         output='screen',
-        parameters=[robot_params],
+        parameters=[odom_params],
     )
 
     rviz_node = Node(
@@ -84,9 +108,19 @@ def generate_launch_description():
             default_value='circle',
             description=(
                 'Human motion scenario to run. '
-                'Options: circle | stationary | square | oscillate | zigzag | '
+                'Options: straight | circle | stationary | square | oscillate | zigzag | '
                 'gentle_arc | approach_and_hold | gentle_zigzag'
             )
         ),
+        DeclareLaunchArgument(
+            'map', default_value='cropped',
+            description='Map to use: cropped (default) | my_room (lab map) | open (no obstacles)'
+        ),
+        DeclareLaunchArgument('robot_start_x',     default_value='',
+                              description='Override robot start x (m); empty = use test_cases.yaml'),
+        DeclareLaunchArgument('robot_start_y',     default_value='',
+                              description='Override robot start y (m); empty = use test_cases.yaml'),
+        DeclareLaunchArgument('robot_start_theta', default_value='',
+                              description='Override robot start theta (rad); empty = use test_cases.yaml'),
         OpaqueFunction(function=launch_setup),
     ])
