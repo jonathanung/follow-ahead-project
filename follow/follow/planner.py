@@ -25,7 +25,6 @@ import numpy as np
 
 from node import Node
 import simple_grid as _sg
-# from human_model import human_probabilities  # Removed as it's missing in algo-main
 
 # ---------------------------------------------------------------------------
 # Path setup — add RL_sim to sys.path so we can import reward, state, and RL_interface
@@ -84,7 +83,7 @@ except Exception as e:
 def calculate_new_state(state: FollowState, action: str, is_robot: bool) -> FollowState:
     """
     Apply a relative turn and step.
-    Robot: uses ROBOT_TURN (45 deg)
+    Robot: uses ROBOT_TURN (6 deg)
     Human: uses HUMAN_TURN (10 deg)
     """
     if is_robot:
