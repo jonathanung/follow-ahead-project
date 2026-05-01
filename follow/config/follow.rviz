@@ -1,0 +1,28 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Displays:
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: RobotTraj
+      Topic:
+        Value: /robot_traj
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: HumanTraj
+      Topic:
+        Value: /human_traj
+  Global Options:
+    Fixed Frame: map
+    Background Color: 0; 0; 0
+  Name: root
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: TopDownOrtho
+      Scale: 100
+      Target Frame: map
+      X: 0
+      Y: 0
+    Saved: ~
